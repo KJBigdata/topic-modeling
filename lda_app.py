@@ -235,7 +235,7 @@ def get_topic_coordinates():
         topic_coordinates = topic_model.topic_coordinates
 
     result = topic_model.topic_coordinates.to_json(orient='columns', force_ascii=False)
-    pprint.pprint(json.loads(result), indent=4)
+    #pprint.pprint(json.loads(result), indent=4)
 
     return result
 
@@ -318,19 +318,21 @@ def show_representative_docs():
             result = representative_docs_df
 
         else:
-            print('show relevant docs')
             relevant_doc = {'ix': [], 'hlight_sentence': []}
 
             keyword = topic_keyword
             if topic == 'all':
-                relevant_topics_df = pd.concat([grp.sort_values(['Topic_Perc_Contrib'], ascending=False).head(5)
-                                            for i, grp in relevant_docs_df.groupby('Topic_Num')])
+                print(f'show relevant docs for {topic}')
+                relevant_topics_df = relevant_docs_df.copy()
+                # relevant_topics_df = pd.concat([grp.sort_values(['Topic_Perc_Contrib'], ascending=False).head(5)
+                #                             for i, grp in relevant_docs_df.groupby('Topic_Num')])
             else:
-                relevant_topics_df = relevant_docs_df[relevant_docs_df.Topic_Num == int(topic)]
+                print(f'show relevant docs for {topic}')
+                relevant_topics_df = relevant_docs_df.copy()
+                #relevant_topics_df = relevant_docs_df[relevant_docs_df.Topic_Num == int(topic)]
             relevant_topics_df = relevant_topics_df.sort_values(['Topic_Perc_Contrib'], ascending=False)
 
             for i, (p, t) in enumerate(relevant_topics_df[['Topic_Perc_Contrib', 'Text']].values):
-
                 if '_' in topic_keyword:
                     gram = topic_keyword.split('_')
                     ids = [find_string_idx(t, g) for g in gram]
@@ -345,10 +347,12 @@ def show_representative_docs():
                     # relevant_doc['hlight_sentence'].append(hlight_term(t, keyword))
 
                 elif find_string_idx(t, keyword) != -1:
+                    idx = find_string_idx(t, keyword)
+                    print(f"{i}번째 문서, {t[idx-1:]}")
                     relevant_doc['ix'].append(i)
                     # relevant_doc['hlight_sentence'].append(hlight_term(t, keyword))
 
-            result = relevant_docs_df.loc[relevant_docs_df.index[relevant_doc['ix']]]
+            result = relevant_docs_df.loc[relevant_topics_df.iloc[relevant_doc['ix']].index]
             # result['hlight_sentence'] = relevant_doc['hlight_sentence']
             result = result.head(top_doc_n)
 
