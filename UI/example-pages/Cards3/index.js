@@ -419,7 +419,7 @@ export default function Cards() {
           var topic_num = datapoints[j]['label'].replace('Topic', '');
           if (topic_num == keys[i]) {
             datapoints[j]['z'] = prob[parseInt(topic_num) - 1];
-            datapoints_new.append(datapoints[j]);
+            datapoints_new.push(datapoints[j]);
             break;
           }
         }
