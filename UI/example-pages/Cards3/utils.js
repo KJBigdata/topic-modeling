@@ -1,5 +1,3 @@
-import * as util from './utils';
-
 //
 // export var global_docs_per_topic = util.httpGet(
 //   'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
@@ -8,26 +6,6 @@ import * as util from './utils';
 export function httpGet(theUrl) {
   console.log('theUrl:', theUrl);
   var xmlHttp = new XMLHttpRequest();
-  // xmlHttp.open('GET', theUrl, true);
-
-  // xmlHttp.onreadystatechange = function() {
-  //   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-  //     clearTimeout(xmlHttpTimeout);
-  //     console.log('Request called');
-  //     console.log(JSON.parse(xmlHttp.responseText));
-  //     console.log(JSON.parse(xmlHttp.responseText)['Doc_id']);
-  //     return JSON.parse(xmlHttp.responseText);
-  //     // console.log(xmlHttp.responseText["Doc_id"])
-  //   }
-  // };
-  // // Now that we're ready to handle the response, we can make the request
-  // xmlHttp.send('');
-  // // Timeout to abort in 5 seconds
-  // var xmlHttpTimeout = setTimeout(ajaxTimeout, 2000);
-  // function ajaxTimeout() {
-  //   xmlHttp.abort();
-  //   console.log('Request timed out');
-  // }
   xmlHttp.open('GET', theUrl, false); // false for synchronous request
   xmlHttp.send(null);
   //
@@ -55,9 +33,12 @@ export function highlighting1(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
-        "<Tooltip title='Keyword' id='Date' className='right'><span class='highlight'>" +
+        "<span class='highlight'>" +
+          '<span style="background-color:red; color:white; font-weight=bold;">' +
+          'Keyword' +
+          '</span>' +
           keywords[i] +
-          '</span></Tooltip>'
+          '</span>'
       );
     }
     return text;
@@ -74,9 +55,12 @@ export function highlighting(text, keywords) {
       // var regex = new RegExp(keywords[i], 'g');
       text = text.replaceAll(
         keywords[i],
-        "<Tooltip title='Keyword' id='Date' className='right'><span class='highlight'>" +
+        "<span class='highlight'>" +
           keywords[i] +
-          '</span></Tooltip>'
+          '<span style="background-color:red; color:white; font-weight=bold;">' +
+          'Keyword' +
+          '</span>' +
+          '</span>'
       );
     }
     return text;
@@ -84,71 +68,72 @@ export function highlighting(text, keywords) {
     return text;
   }
 }
-// export function highlighting_bg(text, keywords) {
-//   if (keywords == undefined) {
-//     return text;
-//   }
-//   try {
-//     for (var i = 0; i < keywords.length; i++) {
-//       var regex = new RegExp(keywords[i], 'g');
-//       text = text.replace(
-//         regex,
-//         "<Tooltip title='Summary Sentence' id='Date' className='right'><span class='highlight_bg'>" +
-//           keywords[i] +
-//           '</span></Tooltip>'
-//       );
-//     }
-//     return text;
-//   } catch {
-//     return text;
-//   }
-// }
 
 export function highlighting_entity(text, entity) {
   if (entity == undefined || entity == []) {
     return text;
   }
   try {
+    var entity_list = [];
     for (var i = 0; i < entity.length; i++) {
-      // var regex = new RegExp(entity[i]['raw'], 'g');
-      // console.log('i: ', i);
       var category = entity[i]['category'];
       var raw = entity[i]['raw'];
-      if (category == 'ORG') {
-        text = text.replaceAll(
-          raw,
-          "<Tooltip title='Organization' className='Organization' placement='right'><span class='highlight_org'>" +
-            entity[i]['raw'] +
-            '</span><Tooltip>'
-        );
-      } else if (category == 'DAT') {
-        text = text.replaceAll(
-          raw,
-          "<Tooltip title='Date' id='Date' className='right'><span class='highlight_dat'>" +
-            entity[i]['raw'] +
-            '</span><Tooltip>'
-        );
-      } else if (category == 'LOC') {
-        text = text.replaceAll(
-          raw,
-          "<Tooltip title='Location' className='Location' placement='right'><span class='highlight_loc'>" +
-            entity[i]['raw'] +
-            '</span><Tooltip>'
-        );
-      } else if (category == 'PER') {
-        text = text.replaceAll(
-          raw,
-          "<Tooltip title='Person' className='Person' placement='right'><span class='highlight_per'>" +
-            entity[i]['raw'] +
-            '</span><Tooltip>'
-        );
-      } else if (category == 'OTHERS') {
-        text = text.replaceAll(
-          raw,
-          "<Tooltip title='Others' className='Others' placement='right'><span class='highlight_others'>" +
-            entity[i]['raw'] +
-            '</span><Tooltip>'
-        );
+      if (raw in entity_list) {
+        continue;
+      } else {
+        entity_list = entity_list.push(raw);
+
+        if (category == 'ORG') {
+          text = text.replaceAll(
+            raw,
+            "<span class='highlight_org'>" +
+              entity[i]['raw'] +
+              '<span style="background-color:green; color:white; font-weight=bold;">' +
+              'Org' +
+              '</span>' +
+              '</span>'
+          );
+        } else if (category == 'DAT') {
+          text = text.replaceAll(
+            raw,
+            "<span class='highlight_dat'>" +
+              entity[i]['raw'] +
+              '<span style="background-color:blue; color:white; font-weight=bold;">' +
+              'Date' +
+              '</span>' +
+              '</span>'
+          );
+        } else if (category == 'LOC') {
+          text = text.replaceAll(
+            raw,
+            "<span class='highlight_loc'>" +
+              entity[i]['raw'] +
+              '<span style="background-color:#222222; color:white; font-weight=bold;">' +
+              'Location' +
+              '</span>' +
+              '</span>'
+          );
+        } else if (category == 'PER') {
+          text = text.replaceAll(
+            raw,
+            "<span class='highlight_per'>" +
+              entity[i]['raw'] +
+              '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
+              'Person' +
+              '</span>' +
+              '</span>'
+          );
+        } else if (category == 'OTHERS') {
+          text = text.replaceAll(
+            raw,
+            "<span class='highlight_others'>" +
+              entity[i]['raw'] +
+              '<span style="background-color:purple; color:white; font-weight=bold;">' +
+              'Others' +
+              '</span>' +
+              '</span>'
+          );
+        }
       }
     }
     return text;
@@ -168,9 +153,12 @@ export function highlighting_bg_key(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
-        "<Tooltip title='Key Sentence' id='Date' className='right'><span class='highlight_bg_key'>" +
+        "<span class='highlight_bg_key'>" +
           keywords[i] +
-          '</span></Tooltip>'
+          '<span style="background-color:darkorange; color:white; font-weight=bold;">' +
+          'Key Sentence' +
+          '</span>' +
+          '</span>'
       );
     }
     // console.log('regex:', regex);
@@ -188,69 +176,6 @@ export function angle_up(topic) {
     document.getElementById(id).innerHTML = '';
   }
 }
-//
-// export function onClickChart(event) {
-//
-//   var topic_num = event.dataPoint.label.replace('Topic', '');
-//   document.getElementById('keyword_title').innerText =
-//     '토픽당 키워드 : Topic ' + topic_num;
-//
-//   // var topic_relevance = util.httpGet(
-//   //   'http://3.34.114.152:5002/topic_relevance?topic=' +
-//   //     topic_num +
-//   //     '&lambda=' +
-//   //     global_lambda_value.toString()
-//   // );
-//   global_topic_num = topic_num;
-//   // setKeywordid(keywordid + 1);
-//   // var freq_ordered = util.sortByValue(topic_relevance['Freq']);
-//   // var max_total_freq = Math.max(...Object.values(topic_relevance['Total']));
-//   //
-//   // for (var ii = 0; ii < 10; ii++) {
-//   //   var key = freq_ordered[ii][0];
-//   //   // document.getElementById("keyword1").value = topic;
-//   //   document.getElementById('keyword' + (ii + 1).toString()).innerHTML =
-//   //     topic_relevance['Term'][key];
-//   //   document.getElementById('button' + (ii + 1).toString()).value =
-//   //     topic_relevance['Term'][key];
-//   //   document.getElementById('button' + (ii + 1).toString()).id =
-//   //     'button' + (ii + 1).toString();
-//   //   document.getElementById('freq' + (ii + 1).toString()).style.width =
-//   //     ((topic_relevance['Freq'][key] / max_total_freq) * 100).toString() + '%';
-//   //   document.getElementById('total-freq' + (ii + 1).toString()).style.width =
-//   //     ((topic_relevance['Total'][key] / max_total_freq) * 100).toString() + '%';
-// }
-
-// var topic2id = Object.keys(global_docs_per_topic['Topic_Num']).reduce(
-//   (obj, key) =>
-//     Object.assign({}, obj, {
-//       [global_docs_per_topic['Topic_Num'][key]]: key
-//     }),
-//   {}
-// );
-// console.log('util.global_topic_num: ', util.global_topic_num);
-// console.log(
-//   'topic2id[util.global_topic_num]: ',
-//   topic2id[util.global_topic_num]
-// );
-// console.log("global_docs_per_topic['Text'] : ", global_docs_per_topic['Text']);
-// var doc = global_docs_per_topic['Text'][topic2id[util.global_topic_num]];
-// if (doc == undefined) {
-//   document.getElementById('top_topic_document').innerHTML = 'No Document Found';
-//   document.getElementById('top_topic_document_title').innerText =
-//     '토픽당 대표 문서' + ' : Topic ' + util.global_topic_num;
-// } else {
-//   var find_keywords =
-//     global_docs_per_topic['Keywords'][topic2id[util.global_topic_num]];
-//   doc = util.highlighting(doc, find_keywords);
-//   document.getElementById('top_topic_document').innerHTML = doc;
-//   document.getElementById('top_topic_document_title').innerText =
-//     '토픽당 대표 문서' + ' : Topic ' + util.global_topic_num;
-//   for (var temp = 0; temp < 10; temp++) {
-//     util.angle_up((temp + 1).toString());
-//   }
-// }
-// }
 
 export var options = {
   animationEnabled: true,
