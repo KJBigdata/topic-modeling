@@ -27,18 +27,29 @@ def create_dictionary(tokened_list):
     return gensim.corpora.Dictionary(tokened_list) #id2word
 
 def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=90):
+    import re
     per = [entity['raw'] for i in tqdm(range(len(entity_list)), desc='Filtering NER:PER')
-           for entity in entity_list[i] if entity['category'] == 'PER']
+           for entity in entity_list[i] if (entity['category'] == 'PER') and (len(entity['raw'])==3)]
     word_counter = Counter([word for words in tokens_list for word in words])
-    for i in tqdm(range(len(per)), desc='Deleting PER KEYs'):
-        del word_counter[per[i]]
+    word_counter_keys = list(word_counter.keys())
+
+    per_pattern = f"( )({'|'.join(per)})(님)?( )"
+    filtered_keys = [t for t in re.sub(per_pattern, ' ', ' '.join(word_counter_keys)).split(' ') if t != '']
+    deleted_keys = []
+    for i in tqdm(range(len(word_counter_keys)), desc='Deleting PER KEYs'):
+        if word_counter_keys[i] in filtered_keys:
+            pass
+        else:
+            deleted_keys.append(word_counter_keys[i])
+            del word_counter[word_counter_keys[i]]
+    print(f"Number of deleted keys : {len(deleted_keys)}")
     l_bound = np.percentile(sorted(list(word_counter.values())), l_bound)
     h_bound = np.percentile(sorted(list(word_counter.values())), h_bound)
     filter = [k for k, b in word_counter.items() if b > l_bound and b < h_bound]
 
     filtered_tokens = [[token for token in tokens_list[i] if token in filter]
                        for i in tqdm(range(len(tokens_list)), desc='Filtering Tokens for modeling')]
-
+    print(f"Number of tokens after filtering : {filtered_tokens}")
     return filtered_tokens
 
 def filter_infreq(dictionary, tokens_list):
