@@ -21,7 +21,7 @@ export var global_filtered_data = util.httpGet('http://3.34.114.152:5002/filtere
 // const data = util.httpGet(url);
 
 
-var unselect_option1 = ['date', 'title', 'content', 'tokens', 'd2c', 'key_sentence', 'entity', 'max_date', 'min_date'];
+var unselect_option1 = ['date', 'title', 'content', 'tokens', 'd2c', 'kpe', 'key_sentence', 'entity', 'max_date', 'min_date'];
 var select_option1 = Object.keys(global_filtered_data);
 var options_key = [];
 var options = {};

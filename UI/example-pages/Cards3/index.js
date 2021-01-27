@@ -441,9 +441,13 @@ export default function Cards() {
           '% (topic number: ' + topic_num + ')</h6><br>' +
           '<b><span>[Category] : ' +
           category1[key] + ' - ' + category2[key] + ' - ' + category3[key] + '</span>' + '</b>' + '</br>' + '</br>' +
-          '<b><span className="key_sentence">[핵심 문장] : ' +
-          key_sentence +
-          '</b></span></p>';
+          '<b><span>[Key Phrases] : ' +
+          kpe[key].sort(function (x, y) {
+            return y.score - x.score;
+        }).slice(0, 5).map(x => x['keyword']) +'</span>' + '</b>' + '</br>' + '</br>' +
+          '<b><span style="color:darkorange; font-weight=bold;">[Key Sentence] : ' + 
+          key_sentence + 
+          '</b></span>' + '</p>';
 
         document.getElementById(summary_id).innerHTML =
           global_summary_document[summary_id];
