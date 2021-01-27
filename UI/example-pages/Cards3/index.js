@@ -18,11 +18,7 @@ import DateSelector from './date_selector';
 import { Lambda } from './lambda';
 import List from '@material-ui/core/List';
 
-
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
-
-
 
 let outsetKeywordid, outkeywordid;
 export var global_topic_num = 'all';
@@ -62,12 +58,26 @@ export function onClickChart(event) {
 }
 
 export default function Cards() {
-
+  // todo: for kbsta analysis
+  // var global_filtered_data = util.httpGet(
+  //   'http://3.34.114.152:5002/filtered_data?category=all&press=all'
+  // );
+  console.log(global_filtered_data['category1']);
   var global_keysentence = global_filtered_data['key_sentence'];
   var global_d2c = global_filtered_data['d2c'];
+  var category1 = global_filtered_data['category1'];
+  var category2 = global_filtered_data['category2'];
+  var category3 = global_filtered_data['category3'];
+  var kpe = global_filtered_data['kpe'];
+
   var global_entity = global_filtered_data['entity'];
+  // var global_filtered_data = null;
 
+  // todo: global variable
 
+  // var global_docs_per_topic = util.httpGet(
+  //   'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
+  // );
 
   var global_document = {};
   var global_click_document = {};
@@ -76,11 +86,13 @@ export default function Cards() {
   var global_category_document = {};
   var global_keysen_document = {};
 
+  //todo: for summary to be content
+
+  // todo: for topic cluster chart
   var global_topic_coordinates = util.httpGet(
     'http://3.34.114.152:5002/topic_coordinates'
   );
   var global_topic_keyword = global_topic_coordinates['Keywords'];
-
 
   var datapoints = [];
   var global_topic_list = [];
@@ -109,6 +121,7 @@ export default function Cards() {
   var style = {};
   var keyword_top = [];
 
+  // todo: for top 30 keyword
   var global_top_salient_terms = util.httpGet(
     'http://3.34.114.152:5002/top_salient_terms'
   );
@@ -191,7 +204,8 @@ export default function Cards() {
         '=' +
         selected[1];
     } else if (selected[0] == 'category2') {
-      base_url = 'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
+      base_url =
+        'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -202,12 +216,13 @@ export default function Cards() {
         '=' +
         selected[1];
     } else if (selected[0] == 'category3') {
-      base_url = 'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
+      base_url =
+        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
         '&end_date=' +
-        end_date_list[0].replaceAll('-','') +
+        end_date_list[0].replaceAll('-', '') +
         '&' +
         selected[0] +
         '=' +
@@ -245,6 +260,19 @@ export default function Cards() {
       var find_keywords =
         global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
       doc = util.highlighting(doc, find_keywords);
+      // console.log('temp: ',topic2id[global_topic_num]);
+      console.log(global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]);
+      console.log(
+        global_entity[
+          global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+        ]
+      );
+
+      var entity =
+        global_entity[
+          global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+        ];
+      doc = util.highlighting_entity(doc, entity);
       document.getElementById('top_topic_document').innerHTML = doc;
       document.getElementById('top_topic_document_title').innerText =
         '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -267,6 +295,13 @@ export default function Cards() {
       var summary_id = 'document' + i + j;
       var entity = global_entity[global_document[summary_id]];
       var category = global_d2c[global_document[summary_id]]['0']['label'];
+      category =
+        category1[global_document[summary_id]] +
+        ' - ' +
+        category2[global_document[summary_id]] +
+        ' - ' +
+        category3[global_document[summary_id]];
+      console.log('category', category);
       var key_sentence = global_summary_document[summary_id];
       global_category_document[summary_id] = category;
       global_keysen_document[summary_id] = key_sentence;
@@ -297,6 +332,7 @@ export default function Cards() {
     var total_full = {};
     document.getElementById('title' + row).innerText = '<Related Documents>';
     var keyword = e.currentTarget.value;
+    // todo-hj: 키워드와 관련한 문서번호들과 해당되는 확률만 가져오기 (문서번호 - 확률)
     var url =
       'http://3.34.114.152:5002/representative_docs_by_topic?topic=' +
       selected_topic +
@@ -304,10 +340,12 @@ export default function Cards() {
       keyword;
     var representative_docs = util.httpGet(url);
 
+    // todo-hj : 키워드에 해당하는 문서의 길이가 0일 때
     if (representative_docs['Doc_Id'].length == 0) {
       var id = 'document' + row + (1).toString();
       document.getElementById(id).innerText = 'No Document';
     }
+    // todo-hj : 키워드에 해당하는 문서의 길이가 0이 아닐 때
     else {
       var count = 0;
 
@@ -339,7 +377,9 @@ export default function Cards() {
         global_summary_document[summary_id] =
           '<p><h5><b> Document Conribution : </b>' +
           Math.floor(doc_contrib * 100).toString() +
-          '% (topic number :' + topic_num + ')</h5><br>' +
+          '% (topic number :' +
+          topic_num +
+          ')</h5><br>' +
           '<p className=key_sentence">[핵심 문장] : <b>' +
           key_sentence +
           '</b></p></p>';
@@ -350,7 +390,9 @@ export default function Cards() {
         global_whole_document[summary_id] =
           '<p><h5><b>   Document Contribution : </b>' +
           Math.floor(doc_contrib * 100).toString() +
-          '% (topic number :' + topic_num + ')</h5><br>' +
+          '% (topic number :' +
+          topic_num +
+          ')</h5><br>' +
           content +
           '</p>';
       }
@@ -369,18 +411,29 @@ export default function Cards() {
     var keyword = e.currentTarget.value;
     var url = 'http://3.34.114.152:5002/topic_dist_term?term=' + keyword;
     var prob = util.httpGet(url)['Freq'];
+    var datapoints_new = [];
     if (prob != undefined && prob != {}) {
       var keys = Object.keys(prob);
-      for (var i = 0; i < datapoints.length; i++) {
-        var topic_num = datapoints[i]['label'].replace('Topic', '');
-        if (keys.includes(topic_num)) {
-          datapoints[i]['z'] = prob[parseInt(topic_num) - 1];
-        } else {
-          datapoints[i]['z'] = 0.1;
+      for (var i = 0; i < keys.length; i++) {
+        for (var j = 0; j < datapoints.length; i++) {
+          var topic_num = datapoints[j]['label'].replace('Topic', '');
+          if (topic_num == keys[i]) {
+            datapoints[j]['z'] = prob[parseInt(topic_num) - 1];
+            datapoints_new.append(datapoints[j]);
+            break;
+          }
         }
       }
+      // for (var i = 0; i < datapoints.length; i++) {
+      //   var topic_num = datapoints[i]['label'].replace('Topic', '');
+      //   if (keys.includes(topic_num)) {
+      //     datapoints[i]['z'] = prob[parseInt(topic_num) - 1];
+      //   } else {
+      //     datapoints[i]['z'] = 0;
+      //   }
+      // }
       initial_options = util.options;
-      initial_options['data']['0']['dataPoints'] = datapoints;
+      initial_options['data']['0']['dataPoints'] = datapoints_new;
       setOptions({
         animationEnabled: true,
         exportEnabled: true,
@@ -406,11 +459,12 @@ export default function Cards() {
             type: 'bubble',
             indexLabel: '{label}',
             toolTipContent: '<b>{label}</b><br>Keywords: {name}<br>Freq: {z}',
-            dataPoints: datapoints,
+            dataPoints: datapoints_new,
             click: onClickChart
           }
         ]
       });
+      // todo:
       var row = e.currentTarget.id.replace('button', '');
 
       if (
@@ -421,6 +475,8 @@ export default function Cards() {
       } else {
         angle_down(e, row, global_topic_num);
       }
+      // todo:
+      // options = options_update;
     } else {
       for (i = 0; i < datapoints.length; i++) {
         datapoints[i]['z'] = 0;
@@ -440,6 +496,7 @@ export default function Cards() {
 
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container spacing={12}>
+          {/*// todo: 데이트 설렉트 박스 수정 - 날짜가 어디어디 분포해있는지 표시*/}
           <Grid item xs={12} sm={2}>
             <DateSelector id="start-date-picker" />
           </Grid>
@@ -447,6 +504,7 @@ export default function Cards() {
             <DateSelector id="end-date-picker" />
           </Grid>
           <Grid item xs>
+            {/*// todo: 상자박스 디자인 수정*/}
             <SimpleListMenu />
           </Grid>
           <Grid item xs={12} sm={1} />
