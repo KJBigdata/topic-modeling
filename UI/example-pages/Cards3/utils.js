@@ -33,12 +33,12 @@ export function highlighting1(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
+        '<span style="background-color:red; color:white; font-weight=bold;">' +
+        'Topic Keyword' +
+        '</span>' + '<b>' +
         "<span class='highlight'>" +
-          '<span style="background-color:red; color:white; font-weight=bold;">' +
-          'Keyword' +
-          '</span>' +
           keywords[i] +
-          '</span>'
+          '</span>' + '</b>'
       );
     }
     return text;
@@ -55,12 +55,12 @@ export function highlighting(text, keywords) {
       // var regex = new RegExp(keywords[i], 'g');
       text = text.replaceAll(
         keywords[i],
+        '<span style="background-color:red; color:white; font-weight=bold;">' +
+        'Topic Keyword' +
+        '</span>' + '<b>' +
         "<span class='highlight'>" +
           keywords[i] +
-          '<span style="background-color:red; color:white; font-weight=bold;">' +
-          'Keyword' +
-          '</span>' +
-          '</span>'
+          '</span>' + '</b>'
       );
     }
     return text;
@@ -86,52 +86,52 @@ export function highlighting_entity(text, entity) {
         if (category == 'ORG') {
           text = text.replaceAll(
             raw,
+            '<span style="background-color:green; color:white; font-weight=bold;">' +
+            'Org' +
+            '</span>' + '<b>' +
             "<span class='highlight_org'>" +
               entity[i]['raw'] +
-              '<span style="background-color:green; color:white; font-weight=bold;">' +
-              'Org' +
-              '</span>' +
-              '</span>'
+              '</span>' + '</b>'
           );
         } else if (category == 'DAT') {
           text = text.replaceAll(
             raw,
+            '<span style="background-color:blue; color:white; font-weight=bold;">' +
+            'Date' +
+            '</span>' + '<b>' + 
             "<span class='highlight_dat'>" +
               entity[i]['raw'] +
-              '<span style="background-color:blue; color:white; font-weight=bold;">' +
-              'Date' +
-              '</span>' +
-              '</span>'
+              '</span>' + '</b>'
           );
         } else if (category == 'LOC') {
           text = text.replaceAll(
             raw,
+            '<span style="background-color:#222222; color:white; font-weight=bold;">' +
+            'Location' +
+            '</span>' + '<b>' +
             "<span class='highlight_loc'>" +
               entity[i]['raw'] +
-              '<span style="background-color:#222222; color:white; font-weight=bold;">' +
-              'Location' +
-              '</span>' +
-              '</span>'
+              '</span>' + '</b>'
           );
         } else if (category == 'PER') {
           text = text.replaceAll(
             raw,
+            '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
+            'Person' +
+            '</span>' + '<b>' + 
             "<span class='highlight_per'>" +
               entity[i]['raw'] +
-              '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
-              'Person' +
-              '</span>' +
-              '</span>'
+
+              '</span>' + '</b>'
           );
         } else if (category == 'OTHERS') {
           text = text.replaceAll(
-            raw,
+            raw,'<span style="background-color:purple; color:white; font-weight=bold;">' +
+            'Others' +
+            '</span>' + '<b>' +
             "<span class='highlight_others'>" +
-              entity[i]['raw'] +
-              '<span style="background-color:purple; color:white; font-weight=bold;">' +
-              'Others' +
-              '</span>' +
-              '</span>'
+              entity[i]['raw'] + '</span>' +'</b>' 
+              
           );
         }
       }
@@ -153,12 +153,12 @@ export function highlighting_bg_key(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
-        "<span class='highlight_bg_key'>" +
-          keywords[i] +
-          '<span style="background-color:darkorange; color:white; font-weight=bold;">' +
-          'Key Sentence' +
-          '</span>' +
-          '</span>'
+        '<span style="background-color:darkorange; color:white; font-weight=bold;">' +
+        'Key Sentence' +
+        '</span>' + '<b>' +
+        "<span style='color:darkorange; font-weight=bold;'>" +
+          keywords[i] + 
+          '</span>' + '</b>'
       );
     }
     // console.log('regex:', regex);
