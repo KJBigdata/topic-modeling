@@ -26,7 +26,7 @@ def convert_to_trigram_tokens(tokens_list, bigram, trigram):
 def create_dictionary(tokened_list):
     return gensim.corpora.Dictionary(tokened_list) #id2word
 
-def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=90):
+def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=95):
     import re
     per = [entity['raw'] for i in tqdm(range(len(entity_list)), desc='Filtering NER:PER')
            for entity in entity_list[i] if (entity['category'] == 'PER') and (len(entity['raw'])==3)]
@@ -35,6 +35,8 @@ def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=90):
 
     per_pattern = f"( )({'|'.join(per)})(님)?( )"
     filtered_keys = [t for t in re.sub(per_pattern, ' ', ' '.join(word_counter_keys)).split(' ') if t != '']
+    k_number_pattern = r"(공|일|이|삼|사|오|육|칠|팔|구|십|백|천|만){1,6}(원)?( )"
+    filtered_keys = [t for t in re.sub(k_number_pattern, ' ', ' '.join(filtered_keys)).split(' ') if t != '']
     deleted_keys = []
     for i in tqdm(range(len(word_counter_keys)), desc='Deleting PER KEYs'):
         if word_counter_keys[i] in filtered_keys:
