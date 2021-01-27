@@ -7,80 +7,148 @@
   touch-action: auto;
 }
 .highlight{
-  color: red;
-  font-weight: 900;
+ border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: red !important;
+  color: black !important;
+  fint-weight: 900;
 }
 .highlight:hover {
-  color: white;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  color: black !important;
   background-color: red;
   font-weight: 900;
 }
 .highlight_bg{
   //background-color: yellow;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
   color: red;
   font-weight: bold;
 }
 .highlight_bg:hover{
-  //background-color: yellow;
+    border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
   color: white;
   background-color: red;
   font-weight: bold;
 }
 .highlight_bg_key{
-  background-color: yellow !important;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: darkorange !important;
   color: black !important;
 }
-.highlight_bg_key{
-  background-color: yellow !important;
+.highlight_bg_key:hover{
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: lightgoldenrodyellow !important;
   color: black !important;
 }
 .highlight_org{
-  text-decoration: underline;
-  color: green;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: green !important;
+  color: black !important;
 }
 .highlight_org:hover{
-  text-decoration: underline;
-  color: white;
-  background-color: green;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: lightgoldenrodyellow !important;
+  color: black !important;
 }
 .Organization{
   background-color: green !important;
 }
 .highlight_dat{
-  text-decoration: underline;
-  color: blue;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: blue !important;
+  color: black !important;
 }
 .highlight_dat:hover{
-  text-decoration: underline;
-  color: white;
-  background-color: blue;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: lightgoldenrodyellow !important;
+  color: black !important;
 }
 //
 .highlight_loc{
-  text-decoration: underline;
-  color: #222222;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: #222222 !important;
+  color: black !important;
 }
 .highlight_loc:hover{
-  text-decoration: underline;
-  color: white;
-  background-color: #222222;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: lightslategrey !important;
+  color: black !important;
 }
 .highlight_per{
-  text-decoration: underline;
-  color: dimgray;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: dimgray !important;
+  color: black !important;
 }
 .highlight_per:hover{
-  text-decoration: underline;
-  color: white;
-  background-color: dimgray;
-}.highlight_others{
-  text-decoration: underline;
-  color: orange;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: lightgray !important;
+  color: black !important;
+}
+.highlight_others{
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: purple !important;
+  color: black !important;
 }
 .highlight_others:hover{
-  text-decoration: underline;
-  color: white;
-  background-color: orange;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  background-color: mediumpurple !important;
+  color: black !important;
 }
 .chart{
   background-color: black !important;
