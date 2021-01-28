@@ -46,40 +46,42 @@ export function highlighting1(text, keywords) {
     return text;
   }
 }
-export function highlighting(text, keywords, keyword = null) {
+export function highlighting(text, keywords, keyword = null, key_sen=null) {
   if (keywords == undefined || keywords == null) {
     return text;
   }
   try {
     for (var i = 0; i < keywords.length; i++) {
       // var regex = new RegExp(keywords[i], 'g');
-      if (keywords[i] == keyword) {
+      if (key_sen.includes(keywords[i])){
+        continue;
+      } else if (keywords[i] == keyword) {
         text = text.replaceAll(
-        keywords[i],
-        '<span style="background-color:red; color:white;">' +
-          'Topic Keyword' +
-          '</span>' +
-          '<b>' +
-          "<span class='highlight_click'>" +
-          keywords[i] +
-          '</span>' +
-          '</b>'
-      );
-      }
-      else{
-        text = text.replaceAll(
-        keywords[i],
-        '<span style="background-color:red; color:white;">' +
-          'Topic Keyword' +
-          '</span>' +
-          '<b>' +
-          "<span class='highlight'>" +
-          keywords[i] +
-          '</span>' +
-          '</b>'
-      );
-      }
+          keywords[i],
 
+            '<b>' +
+            "<span class='highlight_click'>" +
+          '<span style="background-color:red; color:white;">' +
+            'Topic Keyword' +
+            '</span>' +
+            keywords[i] +
+            '</span>' +
+            '</b>'
+        );
+      } else {
+        text = text.replaceAll(
+          keywords[i],
+
+            '<b>' +
+            "<span class='highlight'>" +
+            '<span style="background-color:red; color:white;">' +
+            'Topic Keyword' +
+            '</span>' +
+            keywords[i] +
+            '</span>' +
+            '</b>'
+        );
+      }
     }
     return text;
   } catch {
@@ -87,21 +89,31 @@ export function highlighting(text, keywords, keyword = null) {
   }
 }
 
-export function highlighting_entity(text, entity) {
+export function highlighting_entity(text, entity, keywords = []) {
   if (entity == undefined || entity == []) {
     return text;
   }
-
-  var entity_list = [];
+  console.log('highlighting_entity');
+  console.log(keywords);
+  var entity_list = keywords;
   for (var i = 0; i < entity.length; i++) {
-    try {
-      var category = entity[i]['category'];
-      var raw = entity[i]['raw'];
-      if (entity_list.includes(raw)) {
-        continue;
-      } else {
-        entity_list.push(raw);
-
+    // try {
+    var category = entity[i]['category'];
+    var raw = entity[i]['raw'];
+    if (entity_list.includes(raw)) {
+      continue;
+    } else {
+      var check_substring = false;
+      for (var ii = 0; ii < entity_list.length; ii++) {
+        if (entity_list[ii].includes(raw)) {
+          check_substring = true;
+        }
+      }
+      console.log('**************');
+      console.log(entity_list);
+      console.log(raw);
+      entity_list.push(raw);
+      if (check_substring == false) {
         if (category == 'ORG') {
           text = text.replaceAll(
             raw,
@@ -154,9 +166,11 @@ export function highlighting_entity(text, entity) {
           );
         }
       }
-    } catch {
-      continue;
     }
+    // } catch {
+    //   console.log('error');
+    //   continue;
+    // }
   }
   return text;
 }
@@ -168,16 +182,16 @@ export function highlighting_kpe(text, entity) {
 
   var entity_list = [];
   for (var i = 0; i < entity.length; i++) {
-    // console.log('i.length:', entity.length);
-    // console.log('i:', i);
+    console.log('i.length:', entity.length);
+    console.log('i:', i);
     // try {
     // var category = entity[i]['category'];
     var raw = entity[i]['keyword'];
     var category = entity[i]['category'];
-    // console.log('raw:', raw);
+    console.log('raw:', raw);
     // var check = entity_list.includes(raw);
     if (entity_list.includes(raw)) {
-      // console.log('in------------');
+      console.log('in------------');
       continue;
     } else {
       entity_list.push(raw);

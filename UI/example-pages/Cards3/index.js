@@ -96,8 +96,10 @@ export default function Cards() {
   var global_click_keyword = {};
   var global_whole_document = {};
   var global_summary_document = {};
+  var global_summary_document_raw = {};
   var global_category_document = {};
   var global_keysen_document = {};
+  var global_keyword = {};
 
   //todo: for summary to be content
 
@@ -274,17 +276,12 @@ export default function Cards() {
         global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
       doc = util.highlighting(doc, find_keywords);
       // console.log('temp: ',topic2id[global_topic_num]);
-      console.log(
-        global_entity[
-          global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
-        ]
-      );
 
       var entity =
         global_entity[
           global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
         ];
-      doc = util.highlighting_entity(doc, entity);
+      doc = util.highlighting_entity(doc, entity, find_keywords);
       document.getElementById('top_topic_document').innerHTML = doc;
       document.getElementById('top_topic_document_title').innerText =
         '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -322,8 +319,13 @@ export default function Cards() {
         global_keysen_document['document' + i + j]
       ]);
       var key = global_document[summary_id];
-      full_content = util.highlighting_entity(full_content, entity);
+      full_content = util.highlighting_entity(
+        full_content,
+        entity,
+        global_keyword[summary_id].concat([global_summary_document_raw[summary_id]])
+      );
       console.log('kpe: ', kpe[global_document[summary_id]]);
+
       document.getElementById('document' + i + j).innerHTML =
         full_content.replace('</p>', '').replace('</Button>', '') +
         '<br><b>' +
@@ -393,17 +395,19 @@ export default function Cards() {
         var key = representative_docs['Doc_Id'][doc];
         global_document[summary_id] = key;
         var keywords = representative_docs['Keywords'][doc];
+        global_keyword[summary_id] = keywords;
 
         var doc_contrib = representative_docs['Topic_Perc_Contrib'][doc];
 
         var topic_num = representative_docs['Topic_Num'][doc];
         var key_sentence = global_keysentence[key];
-        key_sentence = util.highlighting(key_sentence, keywords, keyword);
+        // key_sentence = util.highlighting(key_sentence, keywords, keyword);
 
         var content = representative_docs['Text'][doc];
-        content = util.highlighting(content, keywords, keyword);
+        content = util.highlighting(content, keywords, keyword, key_sentence);
         content = util.highlighting_bg_key(content, [key_sentence]);
         count += 1;
+        global_summary_document_raw[summary_id] = key_sentence;
         global_summary_document[summary_id] =
           '<p><h4 style="color:#00ABF0;"><b>Document Distribution : </b>' +
           Math.floor(doc_contrib * 100).toString() +
@@ -510,9 +514,7 @@ export default function Cards() {
       // todo:
       var row = e.currentTarget.id.replace('button', '');
 
-      if (
-        global_click_keyword['title' + row]
-      ) {
+      if (global_click_keyword['title' + row]) {
         global_click_keyword['title' + row] = false;
         util.angle_up(row);
       } else {
