@@ -1,6 +1,7 @@
+import requests
+import re
 from tqdm import tqdm
 import pandas as pd
-import requests
 
 def listing_daterange(start_date, end_date):
     from datetime import datetime, timedelta
@@ -98,7 +99,7 @@ def analyze_docs(docs_list):
     analyzed_list = []
     passed_ix = []
     for i in tqdm(range(len(docs_list)), desc='Analyzing docs'):
-        result = analyze_single_doc(docs_list[i], url, headers, tasks='bnlp,kse,ner,d2c')
+        result = analyze_single_doc(docs_list[i], url, headers, tasks='bnlp,kse,kpe,ner,d2c')
 
         if result['tokens'] != None:
             analyzed_list.append(result)
@@ -109,12 +110,12 @@ def analyze_docs(docs_list):
         print(f"passed_ix : {passed_ix}")
         for ix in passed_ix:
             print(docs_list[ix])
-            result = analyze_single_doc(docs_list[ix], url, headers, tasks='bnlp,kse,ner,d2c')
+            result = analyze_single_doc(docs_list[ix], url, headers, tasks='bnlp,kse,kpe,ner,d2c')
             analyzed_list.insert(ix, result)
 
     return analyzed_list
 
-def analyze_single_doc(doc:str, url:str, headers:dict, tasks:str):
+def analyze_single_doc(doc:str, url:str, headers:dict, tasks:str, pos_list=['NNG', 'NNP', 'XPN', 'XSN']):
     params = {'text': doc, 'tasks': tasks}
     response = requests.get(url, headers=headers, params=params)
 
@@ -126,25 +127,33 @@ def analyze_single_doc(doc:str, url:str, headers:dict, tasks:str):
         if document is None:
             return nouns
 
-        for sentence in document:
-            for word in sentence['word']:
-                for token in word['token']:
-                    if token['pos'] in ['NNG', 'NNP']:
-                        nouns.append(token['raw'])
+        tokens = []
+        for i in range(len(response['sentence'])):
+            for w in response['sentence'][i]['word']:
+                raw_tokens = [f"{t['pos']}{t['raw']}" if t['pos'] in pos_list else '' for t in w['token']]
+                if ''.join(raw_tokens) != '':
+                    pos = re.sub(re.compile(r'([ㄱ-힣])'), '', ''.join(raw_tokens))
+                    if (pos == 'XSN') or (pos == 'XPN'):
+                        pass
+                    else:
+                        tokens.append(
+                            ''.join(raw_tokens).replace('NNG', '').replace('NNP', '').replace('XSN', '').replace('XPN',
+                                                                                                                 ''))
 
-        tokens = [n for n in nouns if len(n) > 1]
+        tokens = [t for t in tokens if len(t) >= 2]
         d2c = response['d2c']
+        kpe = response['kpe']
         key_info = response['sentence'][response['kse'][0]['idx']]
         key_sentence = {'start': key_info['start'], 'raw': key_info['raw'], 'entity': key_info['entity']}
 
         entities = [{'raw': entity['raw'], 'category': entity['category']} for i in range(len(response['sentence']))
                     for entity in response['sentence'][i]['entity']]
 
-        result = {'d2c': d2c, 'key_sentence': key_sentence['raw'], 'entity': entities,
-                  'doc': doc, 'tokens': tokens}
+        result = {'d2c': d2c, 'key_sentence': key_sentence['raw'], 'kpe' : kpe,
+                  'entity': entities, 'doc': doc, 'tokens': tokens}
     else:
         print('Response Error')
-        result = {'d2c': None, 'key_sentence': None, 'entity': None,
+        result = {'d2c': None, 'key_sentence': None, 'kpe' : None, 'entity': None,
                   'doc': doc, 'tokens': None}
 
     return result

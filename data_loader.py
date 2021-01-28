@@ -112,6 +112,7 @@ def preprocess(filename=None, docs_column='content'):
 
     cleaned_input_data['d2c'] = [r['d2c'] for r in result]
     cleaned_input_data['key_sentence'] = [r['key_sentence'] for r in result]
+    cleaned_input_data['kpe'] = [r['kpe'] for r in result]
     cleaned_input_data['tokens'] = [r['tokens'] for r in result]
     cleaned_input_data['entity'] = [r['entity'] for r in result]
 
