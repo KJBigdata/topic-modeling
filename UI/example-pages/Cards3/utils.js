@@ -33,12 +33,12 @@ export function highlighting1(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
-        '<span style="background-color:red; color:white; font-weight=bold;">' +
-        'Topic Keyword' +
-        '</span>' + '<b>' +
         "<span class='highlight'>" +
+          '<span style="background-color:red; color:white; font-weight=bold;">' +
+          'Keyword' +
+          '</span>' +
           keywords[i] +
-          '</span>' + '</b>'
+          '</span>'
       );
     }
     return text;
@@ -46,22 +46,40 @@ export function highlighting1(text, keywords) {
     return text;
   }
 }
-export function highlighting(text, keywords) {
+export function highlighting(text, keywords, keyword = null) {
   if (keywords == undefined || keywords == null) {
     return text;
   }
   try {
     for (var i = 0; i < keywords.length; i++) {
       // var regex = new RegExp(keywords[i], 'g');
-      text = text.replaceAll(
+      if (keywords[i] == keyword) {
+        text = text.replaceAll(
         keywords[i],
-        '<span style="background-color:red; color:white; font-weight=bold;">' +
-        'Topic Keyword' +
-        '</span>' + '<b>' +
-        "<span class='highlight'>" +
+        '<span style="background-color:red; color:white;">' +
+          'Topic Keyword' +
+          '</span>' +
+          '<b>' +
+          "<span class='highlight_click'>" +
           keywords[i] +
-          '</span>' + '</b>'
+          '</span>' +
+          '</b>'
       );
+      }
+      else{
+        text = text.replaceAll(
+        keywords[i],
+        '<span style="background-color:red; color:white;">' +
+          'Topic Keyword' +
+          '</span>' +
+          '<b>' +
+          "<span class='highlight'>" +
+          keywords[i] +
+          '</span>' +
+          '</b>'
+      );
+      }
+
     }
     return text;
   } catch {
@@ -73,73 +91,154 @@ export function highlighting_entity(text, entity) {
   if (entity == undefined || entity == []) {
     return text;
   }
-  try {
-    var entity_list = [];
-    for (var i = 0; i < entity.length; i++) {
+
+  var entity_list = [];
+  for (var i = 0; i < entity.length; i++) {
+    try {
       var category = entity[i]['category'];
       var raw = entity[i]['raw'];
-      if (raw in entity_list) {
+      if (entity_list.includes(raw)) {
         continue;
       } else {
-        entity_list = entity_list.push(raw);
+        entity_list.push(raw);
 
         if (category == 'ORG') {
           text = text.replaceAll(
             raw,
-            '<span style="background-color:green; color:white; font-weight=bold;">' +
-            'Org' +
-            '</span>' + '<b>' +
             "<span class='highlight_org'>" +
               entity[i]['raw'] +
-              '</span>' + '</b>'
+              '<span style="background-color:green; color:white; font-weight=bold;">' +
+              'Org' +
+              '</span>' +
+              '</span>'
           );
         } else if (category == 'DAT') {
           text = text.replaceAll(
             raw,
-            '<span style="background-color:blue; color:white; font-weight=bold;">' +
-            'Date' +
-            '</span>' + '<b>' + 
             "<span class='highlight_dat'>" +
               entity[i]['raw'] +
-              '</span>' + '</b>'
+              '<span style="background-color:blue; color:white; font-weight=bold;">' +
+              'Date' +
+              '</span>' +
+              '</span>'
           );
         } else if (category == 'LOC') {
           text = text.replaceAll(
             raw,
-            '<span style="background-color:#222222; color:white; font-weight=bold;">' +
-            'Location' +
-            '</span>' + '<b>' +
             "<span class='highlight_loc'>" +
               entity[i]['raw'] +
-              '</span>' + '</b>'
+              '<span style="background-color:#222222; color:white; font-weight=bold;">' +
+              'Location' +
+              '</span>' +
+              '</span>'
           );
         } else if (category == 'PER') {
           text = text.replaceAll(
             raw,
-            '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
-            'Person' +
-            '</span>' + '<b>' + 
             "<span class='highlight_per'>" +
               entity[i]['raw'] +
-
-              '</span>' + '</b>'
+              '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
+              'Person' +
+              '</span>' +
+              '</span>'
           );
         } else if (category == 'OTHERS') {
           text = text.replaceAll(
-            raw,'<span style="background-color:purple; color:white; font-weight=bold;">' +
-            'Others' +
-            '</span>' + '<b>' +
+            raw,
             "<span class='highlight_others'>" +
-              entity[i]['raw'] + '</span>' +'</b>' 
-              
+              entity[i]['raw'] +
+              '<span style="background-color:purple; color:white; font-weight=bold;">' +
+              'Others' +
+              '</span>' +
+              '</span>'
           );
         }
       }
+    } catch {
+      continue;
     }
-    return text;
-  } catch {
+  }
+  return text;
+}
+
+export function highlighting_kpe(text, entity) {
+  if (entity == undefined || entity == []) {
     return text;
   }
+
+  var entity_list = [];
+  for (var i = 0; i < entity.length; i++) {
+    // console.log('i.length:', entity.length);
+    // console.log('i:', i);
+    // try {
+    // var category = entity[i]['category'];
+    var raw = entity[i]['keyword'];
+    var category = entity[i]['category'];
+    // console.log('raw:', raw);
+    // var check = entity_list.includes(raw);
+    if (entity_list.includes(raw)) {
+      // console.log('in------------');
+      continue;
+    } else {
+      entity_list.push(raw);
+      if (category == 'ORG') {
+        text = text.replaceAll(
+          raw,
+          "<span class='highlight_org'>" +
+            entity[i]['keyword'] +
+            '<span style="background-color:green; color:white; font-weight=bold;">' +
+            'Org' +
+            '</span>' +
+            '</span>'
+        );
+      } else if (category == 'DAT') {
+        text = text.replaceAll(
+          raw,
+          "<span class='highlight_dat'>" +
+            entity[i]['keyword'] +
+            '<span style="background-color:blue; color:white; font-weight=bold;">' +
+            'Date' +
+            '</span>' +
+            '</span>'
+        );
+      } else if (category == 'LOC') {
+        text = text.replaceAll(
+          raw,
+          "<span class='highlight_loc'>" +
+            entity[i]['keyword'] +
+            '<span style="background-color:#222222; color:white; font-weight=bold;">' +
+            'Location' +
+            '</span>' +
+            '</span>'
+        );
+      } else if (category == 'PER') {
+        text = text.replaceAll(
+          raw,
+          "<span class='highlight_per'>" +
+            entity[i]['keyword'] +
+            '<span style="background-color:dimgray; color:white; font-weight=bold;">' +
+            'Person' +
+            '</span>' +
+            '</span>'
+        );
+      } else if (category == 'OTHERS') {
+        text = text.replaceAll(
+          raw,
+          "<span class='highlight_others'>" +
+            entity[i]['keyword'] +
+            '<span style="background-color:purple; color:white; font-weight=bold;">' +
+            'Others' +
+            '</span>' +
+            '</span>'
+        );
+      }
+    }
+    // } catch {
+    //   console.log('catch');
+    //   continue;
+    // }
+  }
+  return text;
 }
 
 export function highlighting_bg_key(text, keywords) {
@@ -153,12 +252,12 @@ export function highlighting_bg_key(text, keywords) {
       var regex = new RegExp(keywords[i], 'g');
       text = text.replace(
         regex,
-        '<span style="background-color:darkorange; color:white; font-weight=bold;">' +
-        'Key Sentence' +
-        '</span>' + '<b>' +
-        "<span style='color:darkorange; font-weight=bold;'>" +
-          keywords[i] + 
-          '</span>' + '</b>'
+        "<span class='highlight_bg_key'>" +
+          keywords[i] +
+          '<span style="background-color:darkorange; color:white; font-weight=bold;">' +
+          'Key Sentence' +
+          '</span>' +
+          '</span>'
       );
     }
     // console.log('regex:', regex);

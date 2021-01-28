@@ -15,14 +15,10 @@ import * as util from './utils';
 import { SimpleListMenu, global_filtered_data } from './nested_menu.js';
 import { httpGet } from './utils';
 import DateSelector from './date_selector';
-import { Lambda, global_lambda_value } from './lambda';
+import { Lambda } from './lambda';
 import List from '@material-ui/core/List';
 
-
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
-
-
 
 let outsetKeywordid, outkeywordid;
 export var global_topic_num = 'all';
@@ -30,6 +26,7 @@ var global_docs_per_topic = util.httpGet(
   'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
 );
 export function onClickChart(event) {
+  var kpe = global_filtered_data['kpe'];
   global_topic_num = event.dataPoint.label.replace('Topic', '');
   document.getElementById('keyword_title').innerText =
     '토픽당 키워드 : Topic ' + global_topic_num;
@@ -51,12 +48,24 @@ export function onClickChart(event) {
   } else {
     var find_keywords =
       global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
-    doc = util.highlighting(doc, find_keywords);
+
+    console.log('kpe:', kpe);
+    console.log('global_docs_per_topic:', global_docs_per_topic);
+    console.log('global_docs_per_topic:', global_docs_per_topic['Doc_Id']);
+    console.log(
+      'global_docs_per_topic:',
+      global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+    );
+    var doc_id = global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]];
+    console.log('id:', topic2id[global_topic_num]);
+    var entity = kpe[doc_id];
+    console.log('entity: ', entity);
+    doc = util.highlighting_kpe(doc, entity);
     document.getElementById('top_topic_document').innerHTML = doc;
     document.getElementById('top_topic_document_title').innerText =
       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
-    for (var temp = 0; temp < 10; temp++) {
-      util.angle_up((temp + 1).toString());
+    for (var contrib = 0; contrib < 10; contrib++) {
+      util.angle_up((contrib + 1).toString());
     }
   }
 }
@@ -75,7 +84,6 @@ export default function Cards() {
 
   var global_entity = global_filtered_data['entity'];
   // var global_filtered_data = null;
-
 
   // todo: global variable
 
@@ -97,67 +105,6 @@ export default function Cards() {
     'http://3.34.114.152:5002/topic_coordinates'
   );
   var global_topic_keyword = global_topic_coordinates['Keywords'];
-  // const [keywordid, setKeywordid] = React.useState(null);
-
-  // function onClickChart(event) {
-  //   global_topic_num = event.dataPoint.label.replace('Topic', '');
-  //   document.getElementById('keyword_title').innerText =
-  //     '토픽당 키워드 : Topic ' + global_topic_num;
-  //   //
-  //   // var topic_relevance = util.httpGet(
-  //   //   'http://3.34.114.152:5002/topic_relevance?topic=' +
-  //   //     global_topic_num +
-  //   //     '&lambda=' +
-  //   //     global_lambda_value.toString()
-  //   // );
-  //   // var freq_ordered = util.sortByValue(topic_relevance['Freq']);
-  //   // var keyword_id_list = Object.keys(topic_relevance['Term']);
-  //   // var max_total_freq = Math.max(...Object.values(topic_relevance['Total']));
-  //   //
-  //   // for (var ii = 0; ii < 10; ii++) {
-  //   //   var key = freq_ordered[ii][0];
-  //   //   keyword_list.push(topic_relevance['Term'][keyword_id_list[ii]]);
-  //   //   // document.getElementById("keyword1").value = topic;
-  //   //   document.getElementById('keyword' + (ii + 1).toString()).innerHTML =
-  //   //     topic_relevance['Term'][key];
-  //   //   document.getElementById('button' + (ii + 1).toString()).value =
-  //   //     topic_relevance['Term'][key];
-  //   //   document.getElementById('button' + (ii + 1).toString()).id =
-  //   //     'button' + (ii + 1).toString();
-  //   //   document.getElementById('freq' + (ii + 1).toString()).style.width =
-  //   //     ((topic_relevance['Freq'][key] / max_total_freq) * 100).toString() +
-  //   //     '%';
-  //   //   document.getElementById('total-freq' + (ii + 1).toString()).style.width =
-  //   //     ((topic_relevance['Total'][key] / max_total_freq) * 100).toString() +
-  //   //     '%';
-  //   // }
-  //   //
-  //
-  //   var topic2id = Object.keys(global_docs_per_topic['Topic_Num']).reduce(
-  //     (obj, key) =>
-  //       Object.assign({}, obj, {
-  //         [global_docs_per_topic['Topic_Num'][key]]: key
-  //       }),
-  //     {}
-  //   );
-  //   var doc = global_docs_per_topic['Text'][topic2id[global_topic_num]];
-  //   if (doc == undefined) {
-  //     document.getElementById('top_topic_document').innerHTML =
-  //       'No Document Found';
-  //     document.getElementById('top_topic_document_title').innerText =
-  //       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
-  //   } else {
-  //     var find_keywords =
-  //       global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
-  //     doc = util.highlighting(doc, find_keywords);
-  //     document.getElementById('top_topic_document').innerHTML = doc;
-  //     document.getElementById('top_topic_document_title').innerText =
-  //       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
-  //     for (var temp = 0; temp < 10; temp++) {
-  //       util.angle_up((temp + 1).toString());
-  //     }
-  //   }
-  // }
 
   var datapoints = [];
   var global_topic_list = [];
@@ -237,8 +184,8 @@ export default function Cards() {
       datapoints.push(datapoint);
       global_topic_list.push(global_topic_coordinates['topics'][i.toString()]);
     }
-    for (var temp = 0; temp < 10; temp++) {
-      util.angle_up((temp + 1).toString());
+    for (var contrib = 0; contrib < 10; contrib++) {
+      util.angle_up((contrib + 1).toString());
     }
 
     setOptions(initial_options);
@@ -269,7 +216,8 @@ export default function Cards() {
         '=' +
         selected[1];
     } else if (selected[0] == 'category2') {
-      base_url = 'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
+      base_url =
+        'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -280,7 +228,8 @@ export default function Cards() {
         '=' +
         selected[1];
     } else if (selected[0] == 'category3') {
-      base_url = 'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
+      base_url =
+        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -323,22 +272,23 @@ export default function Cards() {
       var find_keywords =
         global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
       doc = util.highlighting(doc, find_keywords);
-      console.log(global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]);
+      // console.log('temp: ',topic2id[global_topic_num]);
       console.log(
         global_entity[
-        global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+          global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
         ]
       );
+
       var entity =
         global_entity[
-        global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+          global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
         ];
       doc = util.highlighting_entity(doc, entity);
       document.getElementById('top_topic_document').innerHTML = doc;
       document.getElementById('top_topic_document_title').innerText =
         '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
-      for (temp = 0; temp < 10; temp++) {
-        util.angle_up((temp + 1).toString());
+      for (contrib = 0; contrib < 10; contrib++) {
+        util.angle_up((contrib + 1).toString());
       }
     }
     setKeywordid(keywordid + 1);
@@ -362,7 +312,7 @@ export default function Cards() {
         category2[global_document[summary_id]] +
         ' - ' +
         category3[global_document[summary_id]];
-      console.log('category', category);
+      // console.log('category', category);
       var key_sentence = global_summary_document[summary_id];
       global_category_document[summary_id] = category;
       global_keysen_document[summary_id] = key_sentence;
@@ -370,19 +320,64 @@ export default function Cards() {
       full_content = util.highlighting_bg_key(full_content, [
         global_keysen_document['document' + i + j]
       ]);
-
+      var key = global_document[summary_id];
       full_content = util.highlighting_entity(full_content, entity);
+      console.log('kpe: ', kpe[global_document[summary_id]]);
       document.getElementById('document' + i + j).innerHTML =
         full_content.replace('</p>', '').replace('</Button>', '') +
         '<br><b>' +
+        '<br><b>' +
+        '#CATEGORY : ' +
+          category1[key] +
+          ' - ' +
+          category2[key] +
+          ' - ' +
+          category3[key] +
+          '</b></br>' +
+
+        '#KEY PHRASES : ' +
+          kpe[key]
+            .sort(function(x, y) {
+              return y.score - x.score;
+            })
+            .slice(0, 5)
+            .map(x => x['keyword']) +
+          '</b></br>'+
         // '#CATEGORY : ' +
         // category +
         // '<b>' +
         // '<br><b>' +
-        // '#KEY_SENTENCE : ' +
+        // '#KEY_Phrases : ' +
         // global_keysentence[global_document[summary_id]] +
         // '<b>' +
         '</p></Button>';
+
+
+      //
+      // <br>' +
+      //     '<b><span>[Category] : ' +
+      //     category1[key] +
+      //     ' - ' +
+      //     category2[key] +
+      //     ' - ' +
+      //     category3[key] +
+      //     '</span>' +
+      //     '</b>' +
+      //     '</br>' +
+      //     '</br>' +
+      //     '<b><span>[Key Phrases] : ' +
+      //     kpe[key]
+      //       .sort(function(x, y) {
+      //         return y.score - x.score;
+      //       })
+      //       .slice(0, 5)
+      //       .map(x => x['keyword']) +
+      //     '</span>' +
+      //     '</b>' +
+      //     '</br>' +
+      //     '</br>' +
+      //     '<b><span style="color:darkorange; font-weight=bold;">[Key Sentence] : ' +
+      //     key_sentence
     }
   };
 
@@ -390,9 +385,10 @@ export default function Cards() {
 
   function angle_down(e, row, selected_topic) {
     var total_full = {};
-    document.getElementById('title' + row).style.fontSize = "x-large";
-    document.getElementById('title' + row).innerText = '<Related Documents>';
+    document.getElementById('title' + row).style.fontSize = 'x-large';
+    // document.getElementById('title' + row).innerText = '<Related Documents>';
     var keyword = e.currentTarget.value;
+
     // todo-hj: 키워드와 관련한 문서번호들과 해당되는 확률만 가져오기 (문서번호 - 확률)
     var url =
       'http://3.34.114.152:5002/representative_docs_by_topic?topic=' +
@@ -427,85 +423,87 @@ export default function Cards() {
 
         var doc_contrib = representative_docs['Topic_Perc_Contrib'][doc];
 
-        var topic_num = representative_docs['Topic_Num'][doc]
+        var topic_num = representative_docs['Topic_Num'][doc];
         var key_sentence = global_keysentence[key];
-        key_sentence = util.highlighting(key_sentence, keywords);
+        key_sentence = util.highlighting(key_sentence, keywords, keyword);
 
         var content = representative_docs['Text'][doc];
-        content = util.highlighting(content, keywords);
+        content = util.highlighting(content, keywords, keyword);
         content = util.highlighting_bg_key(content, [key_sentence]);
         count += 1;
         global_summary_document[summary_id] =
-          '<p><h6 style="color:#00ABF0;"><b>Document Distribution : </b>' +
+          '<p><h4 style="color:#00ABF0;"><b>Document Distribution : </b>' +
           Math.floor(doc_contrib * 100).toString() +
-          '% (topic number: ' + topic_num + ')</h6><br>' +
+          '% (topic number: ' +
+          topic_num +
+          ')</h4><br>' +
           '<b><span>[Category] : ' +
-          category1[key] + ' - ' + category2[key] + ' - ' + category3[key] + '</span>' + '</b>' + '</br>' + '</br>' +
+          category1[key] +
+          ' - ' +
+          category2[key] +
+          ' - ' +
+          category3[key] +
+          '</span>' +
+          '</b>' +
+          '</br>' +
+          '</br>' +
           '<b><span>[Key Phrases] : ' +
-          kpe[key].sort(function (x, y) {
-            return y.score - x.score;
-        }).slice(0, 5).map(x => x['keyword']) +'</span>' + '</b>' + '</br>' + '</br>' +
-          '<b><span style="color:darkorange; font-weight=bold;">[Key Sentence] : ' + 
-          key_sentence + 
-          '</b></span>' + '</p>';
+          kpe[key]
+            .sort(function(x, y) {
+              return y.score - x.score;
+            })
+            .slice(0, 5)
+            .map(x => x['keyword']) +
+          '</span>' +
+          '</b>' +
+          '</br>' +
+          '</br>' +
+          '<b><span style="color:darkorange; font-weight=bold;">[Key Sentence] : ' +
+          key_sentence +
+          '</b></span>' +
+          '</p>';
 
         document.getElementById(summary_id).innerHTML =
           global_summary_document[summary_id];
 
         global_whole_document[summary_id] =
-          '<p><h6 style="color:#00ABF0;"><b>Document Distribution : </b>' +
+          '<p><h4 style="color:#00ABF0;"><b>Document Distribution : </b>' +
           Math.floor(doc_contrib * 100).toString() +
-          '% (topic number: ' + topic_num + ')</h6><br>' + content + '</p>';
+          '% (topic number: ' +
+          topic_num +
+          ')</h4><br>' +
+          content +
+          '</p>';
       }
     }
     return total_full;
   }
-  // function angle_up(topic) {
-  //   document.getElementById('title' + topic).innerHTML = '';
-  //   for (var i = 0; i < 5; i++) {
-  //     var id = 'document' + topic + (i + 1).toString();
-  //     document.getElementById(id).innerHTML = '';
-  //   }
-  // }
 
   function keyword_click(e) {
     var keyword = e.currentTarget.value;
     var url = 'http://3.34.114.152:5002/topic_dist_term?term=' + keyword;
     var prob = util.httpGet(url)['Freq'];
-    var topic_term = httpGet(url)['Topic']
+    var topic_term = httpGet(url)['Topic'];
     var datapoints_new = [];
-
+    console.log('prob:', prob);
     if (prob != undefined && prob != {}) {
       var keys = Object.values(topic_term);
-      // for (var i = 0; i < keys.length; i++) {
-      //   for (var j = 0; j < datapoints.length; j++) {
-      //       var topic_num = datapoints[j]['label'].replace('Topic','');
-      //       if (topic_num == keys[i]){
-      //       console.log(datapoints[j]['z'])
-      //       datapoints[j]['z'] = Object.values(prob)[i];
-      //       datapoints_new.push(datapoints[j]);
-      //       break;
-      //     }
-      //   }
-      // }
-
       for (var i = 0; i < keys.length; i++) {
         for (var j = 0; j < datapoints.length; j++) {
           var topic_num = datapoints[j]['label'].replace('Topic', '');
           if (topic_num == keys[i]) {
-            console.log(datapoints[j]['z'])
+            console.log(datapoints[j]['z']);
             datapoints[j]['z'] = Object.values(prob)[i];
             datapoints_new.push(datapoints[j]);
           } else {
-            datapoints[j]['z'] = (1 - Object.values(prob)[i]) / datapoints.length;
-            datapoints_new.push(datapoints[j])
+            datapoints[j]['z'] =
+              (1 - Object.values(prob)[i]) / datapoints.length;
+            datapoints_new.push(datapoints[j]);
           }
         }
       }
-
-
       initial_options = util.options;
-      initial_options['data']['0']['dataPoints'] = datapoints_new;
+      initial_options['data']['0']['dataPoints'] = datapoints;
       setOptions({
         animationEnabled: true,
         exportEnabled: true,
@@ -531,7 +529,7 @@ export default function Cards() {
             type: 'bubble',
             indexLabel: '{label}',
             toolTipContent: '<b>{label}</b><br>Keywords: {name}<br>Freq: {z}',
-            dataPoints: datapoints_new,
+            dataPoints: datapoints,
             click: onClickChart
           }
         ]
@@ -631,13 +629,6 @@ export default function Cards() {
                 <div className="badge badge-warning">Top 10</div>
               </div>
             </div>
-
-            {/*<Keywords*/}
-            {/*  id={keywordid}*/}
-            {/*  onClick={keyword_click}*/}
-            {/*  onClick1={handleClickSummary}*/}
-            {/*/>*/}
-
             <List>
               <div id="keyword">
                 <Keywords
@@ -645,51 +636,6 @@ export default function Cards() {
                   onClick={keyword_click}
                   onClick1={handleClickSummary}
                 />
-                {/*<Keywords*/}
-                {/*  id="2"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="3"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="4"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="5"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="6"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="7"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="8"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="9"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
-                {/*<Keywords*/}
-                {/*  id="10"*/}
-                {/*  onClick={keyword_click}*/}
-                {/*  onClick1={handleClickSummary}*/}
-                {/*/>*/}
               </div>
             </List>
           </Card>
