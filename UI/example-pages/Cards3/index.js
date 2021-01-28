@@ -46,8 +46,8 @@ export function onClickChart(event) {
     document.getElementById('top_topic_document_title').innerText =
       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
   } else {
-    var find_keywords =
-      global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
+    // var find_keywords =
+    //   global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
 
     console.log('kpe:', kpe);
     console.log('global_docs_per_topic:', global_docs_per_topic);
@@ -93,6 +93,7 @@ export default function Cards() {
 
   var global_document = {};
   var global_click_document = {};
+  var global_click_keyword = {};
   var global_whole_document = {};
   var global_summary_document = {};
   var global_category_document = {};
@@ -328,21 +329,20 @@ export default function Cards() {
         '<br><b>' +
         '<br><b>' +
         '#CATEGORY : ' +
-          category1[key] +
-          ' - ' +
-          category2[key] +
-          ' - ' +
-          category3[key] +
-          '</b></br>' +
-
+        category1[key] +
+        ' - ' +
+        category2[key] +
+        ' - ' +
+        category3[key] +
+        '</b></br>' +
         '#KEY PHRASES : ' +
-          kpe[key]
-            .sort(function(x, y) {
-              return y.score - x.score;
-            })
-            .slice(0, 5)
-            .map(x => x['keyword']) +
-          '</b></br>'+
+        kpe[key]
+          .sort(function(x, y) {
+            return y.score - x.score;
+          })
+          .slice(0, 5)
+          .map(x => x['keyword']) +
+        '</b></br>' +
         // '#CATEGORY : ' +
         // category +
         // '<b>' +
@@ -351,37 +351,10 @@ export default function Cards() {
         // global_keysentence[global_document[summary_id]] +
         // '<b>' +
         '</p></Button>';
-
-
-      //
-      // <br>' +
-      //     '<b><span>[Category] : ' +
-      //     category1[key] +
-      //     ' - ' +
-      //     category2[key] +
-      //     ' - ' +
-      //     category3[key] +
-      //     '</span>' +
-      //     '</b>' +
-      //     '</br>' +
-      //     '</br>' +
-      //     '<b><span>[Key Phrases] : ' +
-      //     kpe[key]
-      //       .sort(function(x, y) {
-      //         return y.score - x.score;
-      //       })
-      //       .slice(0, 5)
-      //       .map(x => x['keyword']) +
-      //     '</span>' +
-      //     '</b>' +
-      //     '</br>' +
-      //     '</br>' +
-      //     '<b><span style="color:darkorange; font-weight=bold;">[Key Sentence] : ' +
-      //     key_sentence
     }
   };
 
-  let keyword_list = [];
+  // let keyword_list = [];
 
   function angle_down(e, row, selected_topic) {
     var total_full = {};
@@ -538,11 +511,12 @@ export default function Cards() {
       var row = e.currentTarget.id.replace('button', '');
 
       if (
-        document.getElementById('title' + row).innerText ===
-        '<Related Documents>'
+        global_click_keyword['title' + row]
       ) {
+        global_click_keyword['title' + row] = false;
         util.angle_up(row);
       } else {
+        global_click_keyword['title' + row] = true;
         angle_down(e, row, global_topic_num);
       }
       // todo:
