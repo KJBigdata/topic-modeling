@@ -465,20 +465,17 @@ export default function Cards() {
     console.log('prob:', prob);
     if (prob != undefined && prob != {}) {
       var keys = Object.values(topic_term);
-      for (var i = 0; i < keys.length; i++) {
         for (var j = 0; j < datapoints.length; j++) {
-          var topic_num = datapoints[j]['label'].replace('Topic', '');
-          if (topic_num == keys[i]) {
-            console.log(datapoints[j]['z']);
-            datapoints[j]['z'] = Object.values(prob)[i];
+          var topic_num = parseInt(datapoints[j]['label'].replace('Topic', ''));
+          if (keys.includes(topic_num)) {
+            datapoints[j]['z'] = Object.values(prob)[keys.indexOf(topic_num)];
             datapoints_new.push(datapoints[j]);
           } else {
-            datapoints[j]['z'] =
-              (1 - Object.values(prob)[i]) / datapoints.length;
+            datapoints[j]['z'] = (1 - Object.values(prob).reduce((a, b) => a + b)) / (datapoints.length - Object.values(prob).length);
             datapoints_new.push(datapoints[j]);
           }
         }
-      }
+      
       initial_options = util.options;
       initial_options['data']['0']['dataPoints'] = datapoints;
       setOptions({
