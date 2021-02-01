@@ -45,6 +45,28 @@
   background-color: lightgoldenrodyellow !important;
   font-weight: 900;
 }
+.highlight_box{
+  border-radius: 25px;
+ border-style: solid !important;
+  border-width: 2px 2px 2px 2px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color:#16d9e3 !important;
+  color: black !important;
+  background-color: #16d9e3 !important;
+  fint-weight: 900;
+}
+.highlight_box:hover {
+  border-radius: 25px;
+  border-style: solid !important;
+  border-width: 2px 2px 2px 2px !important;
+  padding: 0.2px !important;
+  word-break: break-all !important;
+  border-color: #00ffff !important;
+  color: black !important;
+  background-color: #00ffff !important;
+  font-weight: 900;
+}
 .highlight_bg{
   //background-color: yellow;
   border-style: solid !important;

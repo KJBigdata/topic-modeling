@@ -61,7 +61,8 @@ export function onClickChart(event) {
     var entity = kpe[doc_id];
     console.log('entity: ', entity);
     doc = util.highlighting_kpe(doc, entity);
-    doc = util.new_line(doc);
+    // doc = util.new_line(doc);
+    doc = util.tagging(doc);
     document.getElementById('top_topic_document').innerHTML = doc;
     document.getElementById('top_topic_document_title').innerText =
       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -320,7 +321,8 @@ export default function Cards() {
           global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
         ];
       doc = util.highlighting_entity(doc, entity, find_keywords);
-      doc = util.new_line(doc);
+      // doc = util.new_line(doc);
+      doc = util.tagging(doc);
       document.getElementById('top_topic_document').innerHTML = doc;
       document.getElementById('top_topic_document_title').innerText =
         '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -365,7 +367,8 @@ export default function Cards() {
           global_summary_document_raw[summary_id]
         ])
       );
-      full_content = util.new_line(full_content);
+      // full_content = util.new_line(full_content);
+      full_content = util.tagging(full_content);
       console.log('kpe: ', kpe[global_document[summary_id]]);
 
       document.getElementById('document' + i + j).innerHTML =
@@ -448,7 +451,8 @@ export default function Cards() {
         var content = representative_docs['Text'][doc];
         content = util.highlighting(content, [keyword], keyword);
         content = util.highlighting_bg_key(content, [key_sentence]);
-        content = util.new_line(content);
+        content = util.tagging(content);
+        // content = util.new_line(content);
         count += 1;
         global_summary_document_raw[summary_id] = key_sentence;
         global_summary_document[summary_id] =

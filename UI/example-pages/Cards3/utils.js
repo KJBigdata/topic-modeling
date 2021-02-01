@@ -50,23 +50,34 @@ export function new_line(text) {
   }
   return text.replaceAll('|||', '\n');
 }
-export function highlighting1(text, keywords) {
-  if (keywords == undefined || keywords == null) {
-    return text;
-  }
+export function tagging(text) {
+
   try {
-    for (var i = 0; i < keywords.length; i++) {
-      var regex = new RegExp(keywords[i], 'g');
-      text = text.replace(
-        regex,
-        "<span class='highlight'>" +
-          '<span style="background-color:red; color:white; font-weight=bold;">' +
-          'Keyword' +
-          '</span>' +
-          keywords[i] +
-          '</span>'
-      );
-    }
+    // var regex = new RegExp('[F]', 'g');
+    text = text.replaceAll(
+      '[F]',
+      "<br><span class='highlight_box'>" +
+        '<span style="color:darkred; font-weight=bold;">' +
+        '상담원&nbsp;' +
+        '</span>' +
+        '</span>'
+    );
+    // regex = new RegExp('[C]', 'g');
+    text = text.replaceAll(
+      '[C]',
+      "<br><span class='highlight_box'>" +
+        '<span style="color:black; font-weight=bold;">' +
+        '고객&nbsp;' +
+        '</span>' +
+        '</span>'
+    );
+    // regex = new RegExp('[N]', 'g');
+    text = text.replaceAll(
+      '[N]',
+      "<br>" +
+        '-&nbsp;'
+    );
+
     return text;
   } catch {
     return text;
