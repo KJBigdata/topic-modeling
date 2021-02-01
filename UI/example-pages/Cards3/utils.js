@@ -24,6 +24,32 @@ export function sortByValue(unordered) {
   return ordered;
 }
 
+export function new_line(text) {
+  text = text.replaceAll('[N]', '<br>');
+  // var return_text = text;
+  if (text.includes('[C]') || text.includes('[F]')) {
+    var now = '';
+    var prev = '';
+    for (var i = 0; i < text.length; i++) {
+      var temp = text.slice(i, i + 3);
+      if (temp == '[C]' || temp == '[F]') {
+        now = temp;
+        if (now == prev) {
+          // text.slice(i, i + 3) = '|||';
+          text = text.slice(0, i) + '|||' + text.slice(i + 3, text.length + 1);
+        }
+        // else if(temp == '[C]'){
+        //   return_text = return_text.slice(0, i) + '\n' + text.slice(i + 3, text.length + 1);
+        // }
+        // else if(temp == '[F]'){
+        //   return_text = return_text.slice(0, i) + '\n#' + text.slice(i + 3, text.length + 1);
+        // }
+        prev = temp;
+      }
+    }
+  }
+  return text.replaceAll('|||', '\n');
+}
 export function highlighting1(text, keywords) {
   if (keywords == undefined || keywords == null) {
     return text;
