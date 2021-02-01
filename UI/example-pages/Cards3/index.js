@@ -23,7 +23,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 let outsetKeywordid, outkeywordid;
 export var global_topic_num = 'all';
 var global_docs_per_topic = util.httpGet(
-  'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
+  'http://3.34.114.152:5004/representative_docs_by_topic?topic=all&top_doc_n=1'
 );
 export function onClickChart(event) {
   var kpe = global_filtered_data['kpe'];
@@ -61,6 +61,7 @@ export function onClickChart(event) {
     var entity = kpe[doc_id];
     console.log('entity: ', entity);
     doc = util.highlighting_kpe(doc, entity);
+    doc = util.new_line(doc);
     document.getElementById('top_topic_document').innerHTML = doc;
     document.getElementById('top_topic_document_title').innerText =
       '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -69,16 +70,54 @@ export function onClickChart(event) {
     }
   }
 }
-var col1= {};
-var col2= {};
-var col3= {};
+var col1 = {};
+var col2 = {};
+var col3 = {};
 
-for (var i=0; i<30; i++) {
-    col1[i] = ( Math.floor(Math.random() * 156)+100);
-    col2[i] = ( Math.floor(Math.random() * 156)+100);
-    col3[i] = ( Math.floor(Math.random() * 156)+100);
-
+for (var i = 0; i < 30; i++) {
+  col1[i] = Math.floor(Math.random() * 156) + 100;
+  col2[i] = Math.floor(Math.random() * 156) + 100;
+  col3[i] = Math.floor(Math.random() * 156) + 100;
 }
+var datapoints = [];
+
+var global_topic_coordinates = util.httpGet(
+  'http://3.34.114.152:5004/topic_coordinates'
+);
+var global_topic_keyword = global_topic_coordinates['Keywords'];
+
+datapoints = [];
+var global_topic_list = [];
+
+for (i = 0; i < Object.keys(global_topic_coordinates['x']).length; i++) {
+  // var col1 = Math.floor(Math.random() * 256);
+  // var col2 = Math.floor(Math.random() * 256);
+  // var col3 = Math.floor(Math.random() * 256);
+  console.log('color_changed:', col1[i] + ' -- ' + col2[i] + ' -- ' + col3[i]);
+  var datapoint = {
+    label:
+      'Topic' + global_topic_coordinates['topics'][i.toString()].toString(),
+    x: global_topic_coordinates['x'][i.toString()],
+    y: global_topic_coordinates['y'][i.toString()],
+    z: global_topic_coordinates['Freq'][i.toString()],
+    name: global_topic_keyword[i.toString()],
+    color:
+      'rgba(' +
+      col1[i].toString() +
+      ',' +
+      col2[i].toString() +
+      ',' +
+      col3[i].toString() +
+      ',1)'
+  };
+
+  datapoints.push(datapoint);
+  global_topic_list.push(global_topic_coordinates['topics'][i.toString()]);
+}
+
+var initial_options = util.options;
+initial_options['data'][0]['dataPoints'] = datapoints;
+initial_options['data'][0]['click'] = onClickChart;
 
 export default function Cards() {
   // todo: for kbsta analysis
@@ -114,36 +153,6 @@ export default function Cards() {
   //todo: for summary to be content
 
   // todo: for topic cluster chart
-  var global_topic_coordinates = util.httpGet(
-    'http://3.34.114.152:5002/topic_coordinates'
-  );
-  var global_topic_keyword = global_topic_coordinates['Keywords'];
-
-  var datapoints = [];
-  var global_topic_list = [];
-
-  for (var i = 0; i < Object.keys(global_topic_coordinates['x']).length; i++) {
-    // var col1 = Math.floor(Math.random() * 256);
-    // var col2 = Math.floor(Math.random() * 256);
-    // var col3 = Math.floor(Math.random() * 256);
-    console.log('color_changed:', col1[i] + ' -- ' + col2[i]+' -- ' + col3[i]);
-    var datapoint = {
-      label:
-        'Topic' + global_topic_coordinates['topics'][i.toString()].toString(),
-      x: global_topic_coordinates['x'][i.toString()],
-      y: global_topic_coordinates['y'][i.toString()],
-      z: global_topic_coordinates['Freq'][i.toString()],
-      name: global_topic_keyword[i.toString()],
-      color: 'rgba('+col1[i].toString()+','+col2[i].toString()+','+col3[i].toString()+',1)'
-    };
-
-    datapoints.push(datapoint);
-    global_topic_list.push(global_topic_coordinates['topics'][i.toString()]);
-  }
-
-  var initial_options = util.options;
-  initial_options['data'][0]['dataPoints'] = datapoints;
-  initial_options['data'][0]['click'] = onClickChart;
 
   const [options, setOptions] = React.useState(initial_options);
   const [keywordid, setKeywordid] = React.useState(null);
@@ -154,7 +163,7 @@ export default function Cards() {
 
   // todo: for top 30 keyword
   var global_top_salient_terms = util.httpGet(
-    'http://3.34.114.152:5002/top_salient_terms'
+    'http://3.34.114.152:5004/top_salient_terms'
   );
 
   var top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -184,7 +193,7 @@ export default function Cards() {
     datapoints = [];
     global_topic_list = [];
     var global_topic_coordinates = util.httpGet(
-      'http://3.34.114.152:5002/topic_coordinates'
+      'http://3.34.114.152:5004/topic_coordinates'
     );
     for (
       var i = 0;
@@ -201,7 +210,14 @@ export default function Cards() {
         y: global_topic_coordinates['y'][i.toString()],
         z: global_topic_coordinates['Freq'][i.toString()],
         name: global_topic_keyword[i.toString()],
-        color: 'rgba('+col1.toString()+','+col2.toString()+','+col3.toString()+',1)'
+        color:
+          'rgba(' +
+          col1.toString() +
+          ',' +
+          col2.toString() +
+          ',' +
+          col3.toString() +
+          ',1)'
       };
 
       datapoints.push(datapoint);
@@ -210,6 +226,7 @@ export default function Cards() {
     for (var contrib = 0; contrib < 10; contrib++) {
       util.angle_up((contrib + 1).toString());
     }
+    console.log('apply_click: ', datapoints);
 
     setOptions(initial_options);
 
@@ -228,7 +245,7 @@ export default function Cards() {
     var url = '';
     if (selected[0] == 'category1') {
       base_url =
-        'http://3.34.114.152:5002/filtered_data?category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5004/filtered_data?category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -240,7 +257,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category2') {
       base_url =
-        'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
+        'http://3.34.114.152:5004/filtered_data?category1=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -252,7 +269,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category3') {
       base_url =
-        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
+        'http://3.34.114.152:5004/filtered_data?category1=all&category2=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -264,7 +281,7 @@ export default function Cards() {
         selected[1];
     } else {
       base_url =
-        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5004/filtered_data?category1=all&category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -275,7 +292,7 @@ export default function Cards() {
     httpGet(url);
 
     global_docs_per_topic = util.httpGet(
-      'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
+      'http://3.34.114.152:5004/representative_docs_by_topic?topic=all&top_doc_n=1'
     );
 
     var topic2id = Object.keys(global_docs_per_topic['Topic_Num']).reduce(
@@ -295,6 +312,7 @@ export default function Cards() {
       var find_keywords =
         global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
       doc = util.highlighting(doc, find_keywords);
+
       // console.log('temp: ',topic2id[global_topic_num]);
 
       var entity =
@@ -302,6 +320,7 @@ export default function Cards() {
           global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
         ];
       doc = util.highlighting_entity(doc, entity, find_keywords);
+      doc = util.new_line(doc);
       document.getElementById('top_topic_document').innerHTML = doc;
       document.getElementById('top_topic_document_title').innerText =
         '토픽당 대표 문서' + ' : Topic ' + global_topic_num;
@@ -342,8 +361,11 @@ export default function Cards() {
       full_content = util.highlighting_entity(
         full_content,
         entity,
-        global_keyword[summary_id].concat([global_summary_document_raw[summary_id]])
+        global_keyword[summary_id].concat([
+          global_summary_document_raw[summary_id]
+        ])
       );
+      full_content = util.new_line(full_content);
       console.log('kpe: ', kpe[global_document[summary_id]]);
 
       document.getElementById('document' + i + j).innerHTML =
@@ -386,7 +408,7 @@ export default function Cards() {
 
     // todo-hj: 키워드와 관련한 문서번호들과 해당되는 확률만 가져오기 (문서번호 - 확률)
     var url =
-      'http://3.34.114.152:5002/representative_docs_by_topic?topic=' +
+      'http://3.34.114.152:5004/representative_docs_by_topic?topic=' +
       selected_topic +
       '&top_doc_n=5&topic_keyword=' +
       keyword;
@@ -426,6 +448,7 @@ export default function Cards() {
         var content = representative_docs['Text'][doc];
         content = util.highlighting(content, [keyword], keyword);
         content = util.highlighting_bg_key(content, [key_sentence]);
+        content = util.new_line(content);
         count += 1;
         global_summary_document_raw[summary_id] = key_sentence;
         global_summary_document[summary_id] =
@@ -478,10 +501,10 @@ export default function Cards() {
 
   function keyword_click(e) {
     var keyword = e.currentTarget.value;
-    var url = 'http://3.34.114.152:5002/topic_dist_term?term=' + keyword;
+    var url = 'http://3.34.114.152:5004/topic_dist_term?term=' + keyword;
     var prob = util.httpGet(url)['Freq'];
     var topic_term = httpGet(url)['Topic'];
-    var datapoints_new = [];
+    // var datapoints_new = [];
     console.log('prob:', prob);
     if (prob != undefined && prob != {}) {
       var keys = Object.values(topic_term);
@@ -493,13 +516,18 @@ export default function Cards() {
             // console.log(datapoints[j]['z']);
             // datapoints[j]['z'] = Object.values(prob)[i];
             // datapoints_new.push(datapoints[j]);
-            datapoints[j]['color'] = datapoints[j]['color'].replace(',0.2)', ',1)');
-
+            datapoints[j]['color'] = datapoints[j]['color'].replace(
+              ',0.2)',
+              ',1)'
+            );
           } else {
             // datapoints[j]['z'] =
             //   (1 - Object.values(prob)[i]) / datapoints.length;
             // datapoints_new.push(datapoints[j]);
-            datapoints[j]['color'] = datapoints[j]['color'].replace(',1)', ',0.2)');
+            datapoints[j]['color'] = datapoints[j]['color'].replace(
+              ',1)',
+              ',0.2)'
+            );
           }
         }
       }
@@ -536,6 +564,7 @@ export default function Cards() {
         ]
       });
       // todo:
+      console.log('keyword_click: ', datapoints);
       var row = e.currentTarget.id.replace('button', '');
 
       if (global_click_keyword['title' + row]) {
@@ -547,14 +576,15 @@ export default function Cards() {
       }
       // todo:
       // options = options_update;
-    } else {
-      for (i = 0; i < datapoints.length; i++) {
-        datapoints[i]['z'] = 0;
-      }
-      initial_options = util.options;
-      initial_options['data']['0']['dataPoints'] = datapoints;
-      setOptions(initial_options);
     }
+    // else {
+    //   for (i = 0; i < datapoints.length; i++) {
+    //     datapoints[i]['z'] = 0;
+    // }
+    // initial_options = util.options;
+    // initial_options['data']['0']['dataPoints'] = datapoints;
+    // setOptions(initial_options);
+    // }
   }
 
   return (
