@@ -62,7 +62,7 @@ export function highlighting(text, keywords, keyword = null, key_sen = null) {
         '<b>' +
           "<span class='highlight_click'>" +
           '<span style="background-color:red; color:white;">' +
-          'Topic Keyword' +
+          // 'Topic Keyword' +
           '</span>' +
           keyword +
           '</span>' +
@@ -76,7 +76,7 @@ export function highlighting(text, keywords, keyword = null, key_sen = null) {
           '<b>' +
             "<span class='highlight'>" +
             '<span style="background-color:red; color:white;">' +
-            'Topic Keyword' +
+            // 'Topic Keyword' +
             '</span>' +
             keywords[i] +
             '</span>' +
