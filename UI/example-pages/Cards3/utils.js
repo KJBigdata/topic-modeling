@@ -46,33 +46,34 @@ export function highlighting1(text, keywords) {
     return text;
   }
 }
-export function highlighting(text, keywords, keyword = null, key_sen=null) {
+export function highlighting(text, keywords, keyword = null, key_sen = null) {
   if (keywords == undefined || keywords == null) {
     return text;
   }
   try {
-    for (var i = 0; i < keywords.length; i++) {
-      // var regex = new RegExp(keywords[i], 'g');
-      if (key_sen.includes(keywords[i])){
-        continue;
-      } else if (keywords[i] == keyword) {
-        text = text.replaceAll(
-          keywords[i],
+    // var regex = new RegExp(keywords[i], 'g');
+    // if (key_sen.includes(keywords[i])){
+    //   continue;
+    // } else
+    if (keyword != null) {
+      text = text.replaceAll(
+        keyword,
 
-            '<b>' +
-            "<span class='highlight_click'>" +
+        '<b>' +
+          "<span class='highlight_click'>" +
           '<span style="background-color:red; color:white;">' +
-            'Topic Keyword' +
-            '</span>' +
-            keywords[i] +
-            '</span>' +
-            '</b>'
-        );
-      } else {
-        text = text.replaceAll(
+          'Topic Keyword' +
+          '</span>' +
+          keyword +
+          '</span>' +
+          '</b>'
+      );
+    } else {
+      for (var i = 0; i < keywords.length; i++) {
+        text = text.replace(
           keywords[i],
 
-            '<b>' +
+          '<b>' +
             "<span class='highlight'>" +
             '<span style="background-color:red; color:white;">' +
             'Topic Keyword' +

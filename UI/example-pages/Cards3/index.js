@@ -69,6 +69,16 @@ export function onClickChart(event) {
     }
   }
 }
+var col1= {};
+var col2= {};
+var col3= {};
+
+for (var i=0; i<30; i++) {
+    col1[i] = ( Math.floor(Math.random() * 156)+100);
+    col2[i] = ( Math.floor(Math.random() * 156)+100);
+    col3[i] = ( Math.floor(Math.random() * 156)+100);
+
+}
 
 export default function Cards() {
   // todo: for kbsta analysis
@@ -111,14 +121,20 @@ export default function Cards() {
 
   var datapoints = [];
   var global_topic_list = [];
+
   for (var i = 0; i < Object.keys(global_topic_coordinates['x']).length; i++) {
+    // var col1 = Math.floor(Math.random() * 256);
+    // var col2 = Math.floor(Math.random() * 256);
+    // var col3 = Math.floor(Math.random() * 256);
+    console.log('color_changed:', col1[i] + ' -- ' + col2[i]+' -- ' + col3[i]);
     var datapoint = {
       label:
         'Topic' + global_topic_coordinates['topics'][i.toString()].toString(),
       x: global_topic_coordinates['x'][i.toString()],
       y: global_topic_coordinates['y'][i.toString()],
       z: global_topic_coordinates['Freq'][i.toString()],
-      name: global_topic_keyword[i.toString()]
+      name: global_topic_keyword[i.toString()],
+      color: 'rgba('+col1[i].toString()+','+col2[i].toString()+','+col3[i].toString()+',1)'
     };
 
     datapoints.push(datapoint);
@@ -175,13 +191,17 @@ export default function Cards() {
       i < Object.keys(global_topic_coordinates['x']).length;
       i++
     ) {
+      var col1 = Math.floor(Math.random() * 256);
+      var col2 = Math.floor(Math.random() * 256);
+      var col3 = Math.floor(Math.random() * 256);
       var datapoint = {
         label:
           'Topic' + global_topic_coordinates['topics'][i.toString()].toString(),
         x: global_topic_coordinates['x'][i.toString()],
         y: global_topic_coordinates['y'][i.toString()],
         z: global_topic_coordinates['Freq'][i.toString()],
-        name: global_topic_keyword[i.toString()]
+        name: global_topic_keyword[i.toString()],
+        color: 'rgba('+col1.toString()+','+col2.toString()+','+col3.toString()+',1)'
       };
 
       datapoints.push(datapoint);
@@ -404,7 +424,7 @@ export default function Cards() {
         // key_sentence = util.highlighting(key_sentence, keywords, keyword);
 
         var content = representative_docs['Text'][doc];
-        content = util.highlighting(content, keywords, keyword, key_sentence);
+        content = util.highlighting(content, [keyword], keyword);
         content = util.highlighting_bg_key(content, [key_sentence]);
         count += 1;
         global_summary_document_raw[summary_id] = key_sentence;
@@ -465,17 +485,24 @@ export default function Cards() {
     console.log('prob:', prob);
     if (prob != undefined && prob != {}) {
       var keys = Object.values(topic_term);
+      for (var i = 0; i < keys.length; i++) {
         for (var j = 0; j < datapoints.length; j++) {
           var topic_num = parseInt(datapoints[j]['label'].replace('Topic', ''));
           if (keys.includes(topic_num)) {
-            datapoints[j]['z'] = Object.values(prob)[keys.indexOf(topic_num)];
-            datapoints_new.push(datapoints[j]);
+            // datapoints[j]['z'] = Object.values(prob)[keys.indexOf(topic_num)];
+            // console.log(datapoints[j]['z']);
+            // datapoints[j]['z'] = Object.values(prob)[i];
+            // datapoints_new.push(datapoints[j]);
+            datapoints[j]['color'] = datapoints[j]['color'].replace(',0.2)', ',1)');
+
           } else {
-            datapoints[j]['z'] = (1 - Object.values(prob).reduce((a, b) => a + b)) / (datapoints.length - Object.values(prob).length);
-            datapoints_new.push(datapoints[j]);
+            // datapoints[j]['z'] =
+            //   (1 - Object.values(prob)[i]) / datapoints.length;
+            // datapoints_new.push(datapoints[j]);
+            datapoints[j]['color'] = datapoints[j]['color'].replace(',1)', ',0.2)');
           }
         }
-      
+      }
       initial_options = util.options;
       initial_options['data']['0']['dataPoints'] = datapoints;
       setOptions({

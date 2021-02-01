@@ -13,7 +13,7 @@
   word-break: break-all !important;
   border-color: red !important;
   color: black !important;
-  fint-weight: 900;
+  //fint-weight: 900;
 }
 .highlight:hover {
   border-style: solid !important;
@@ -22,7 +22,27 @@
   word-break: break-all !important;
   border-color: yellow !important;
   color: black !important;
-  background-color: red;
+  background-color: lightgoldenrodyellow !important;
+  //font-weight: 900;
+}
+.highlight_click{
+ border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: red !important;
+  color: black !important;
+  background-color: lightpink !important;
+  fint-weight: 900;
+}
+.highlight_click:hover {
+  border-style: solid !important;
+  border-width: 2px 2px 2px 8px !important;
+  padding: 0.1px !important;
+  word-break: break-all !important;
+  border-color: yellow !important;
+  color: black !important;
+  background-color: lightgoldenrodyellow !important;
   font-weight: 900;
 }
 .highlight_bg{
@@ -39,9 +59,9 @@
   border-width: 2px 2px 2px 8px !important;
   padding: 0.1px !important;
   word-break: break-all !important;
-  border-color: yellow !important;
   color: white;
-  background-color: red;
+  border-color: yellow !important;
+  background-color: lightgoldenrodyellow !important;
   font-weight: bold;
 }
 .highlight_bg_key{
@@ -49,7 +69,9 @@
   border-width: 2px 2px 2px 8px !important;
   padding: 0.1px !important;
   word-break: break-all !important;
-  border-color: darkorange !important;
+  border-color: yellow !important;
+  //background-color: lightgoldenrodyellow !important;
+
   color: black !important;
 }
 .highlight_bg_key:hover{
@@ -113,7 +135,7 @@
   padding: 0.1px !important;
   word-break: break-all !important;
   border-color: yellow !important;
-  background-color: lightslategrey !important;
+  background-color: lightgoldenrodyellow !important;
   color: black !important;
 }
 .highlight_per{
@@ -130,7 +152,7 @@
   padding: 0.1px !important;
   word-break: break-all !important;
   border-color: yellow !important;
-  background-color: lightgray !important;
+  background-color: lightgoldenrodyellow !important;
   color: black !important;
 }
 .highlight_others{
@@ -147,7 +169,7 @@
   padding: 0.1px !important;
   word-break: break-all !important;
   border-color: yellow !important;
-  background-color: mediumpurple !important;
+  background-color: lightgoldenrodyellow !important;
   color: black !important;
 }
 .chart{
