@@ -69,7 +69,7 @@ class TopicModeler:
         regex = re.compile(r'[^가-힣]')
         topic2id = json.loads(topic_coordinates['topics'].to_json())
         
-        top_keywords = [(topic2id[str(c[0])], c[1]) for c in self.model.show_topics()]
+        top_keywords = [(topic2id[str(c[0])], c[1]) for c in self.model.show_topics(len(topic_coordinates.topics.to_list()))]
         top_keywords = sorted(top_keywords, key=lambda x: (x[0]), reverse=False)
         top_keywords = [re.sub(regex, ' ', c[1]).split()[:3] for c in top_keywords]
 
