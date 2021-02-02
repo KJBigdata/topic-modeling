@@ -17,13 +17,14 @@ import { httpGet } from './utils';
 import DateSelector from './date_selector';
 import { Lambda } from './lambda';
 import List from '@material-ui/core/List';
+// import Keyword from '../Keywords/keyword';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 let outsetKeywordid, outkeywordid;
 export var global_topic_num = 'all';
 var global_docs_per_topic = util.httpGet(
-  'http://3.34.114.152:5004/representative_docs_by_topic?topic=all&top_doc_n=1'
+  'http://3.34.114.152:5003/representative_docs_by_topic?topic=all&top_doc_n=1'
 );
 export function onClickChart(event) {
   var kpe = global_filtered_data['kpe'];
@@ -49,17 +50,17 @@ export function onClickChart(event) {
     // var find_keywords =
     //   global_docs_per_topic['Keywords'][topic2id[global_topic_num]];
 
-    console.log('kpe:', kpe);
-    console.log('global_docs_per_topic:', global_docs_per_topic);
-    console.log('global_docs_per_topic:', global_docs_per_topic['Doc_Id']);
-    console.log(
-      'global_docs_per_topic:',
-      global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
-    );
+    // console.log('kpe:', kpe);
+    // console.log('global_docs_per_topic:', global_docs_per_topic);
+    // console.log('global_docs_per_topic:', global_docs_per_topic['Doc_Id']);
+    // console.log(
+    //   'global_docs_per_topic:',
+    //   global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]]
+    // );
     var doc_id = global_docs_per_topic['Doc_Id'][topic2id[global_topic_num]];
-    console.log('id:', topic2id[global_topic_num]);
+    // console.log('id:', topic2id[global_topic_num]);
     var entity = kpe[doc_id];
-    console.log('entity: ', entity);
+    // console.log('entity: ', entity);
     doc = util.highlighting_kpe(doc, entity);
     // doc = util.new_line(doc);
     doc = util.tagging(doc);
@@ -83,7 +84,7 @@ for (var i = 0; i < 30; i++) {
 var datapoints = [];
 
 var global_topic_coordinates = util.httpGet(
-  'http://3.34.114.152:5004/topic_coordinates'
+  'http://3.34.114.152:5003/topic_coordinates'
 );
 var global_topic_keyword = global_topic_coordinates['Keywords'];
 
@@ -94,7 +95,7 @@ for (i = 0; i < Object.keys(global_topic_coordinates['x']).length; i++) {
   // var col1 = Math.floor(Math.random() * 256);
   // var col2 = Math.floor(Math.random() * 256);
   // var col3 = Math.floor(Math.random() * 256);
-  console.log('color_changed:', col1[i] + ' -- ' + col2[i] + ' -- ' + col3[i]);
+  // console.log('color_changed:', col1[i] + ' -- ' + col2[i] + ' -- ' + col3[i]);
   var datapoint = {
     label:
       'Topic' + global_topic_coordinates['topics'][i.toString()].toString(),
@@ -120,10 +121,12 @@ var initial_options = util.options;
 initial_options['data'][0]['dataPoints'] = datapoints;
 initial_options['data'][0]['click'] = onClickChart;
 
+var global_num_of_keyword = 10;
+
 export default function Cards() {
   // todo: for kbsta analysis
   // var global_filtered_data = util.httpGet(
-  //   'http://3.34.114.152:5002/filtered_data?category=all&press=all'
+  //   'http://3.34.114.152:5003/filtered_data?category=all&press=all'
   // );
   var global_keysentence = global_filtered_data['key_sentence'];
   var global_d2c = global_filtered_data['d2c'];
@@ -138,7 +141,7 @@ export default function Cards() {
   // todo: global variable
 
   // var global_docs_per_topic = util.httpGet(
-  //   'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
+  //   'http://3.34.114.152:5003/representative_docs_by_topic?topic=all&top_doc_n=1'
   // );
 
   var global_document = {};
@@ -157,6 +160,7 @@ export default function Cards() {
 
   const [options, setOptions] = React.useState(initial_options);
   const [keywordid, setKeywordid] = React.useState(null);
+  const [keywordNum, setKeywordNum] = React.useState(global_num_of_keyword);
   outsetKeywordid = setKeywordid;
   outkeywordid = keywordid;
   var style = {};
@@ -164,7 +168,7 @@ export default function Cards() {
 
   // todo: for top 30 keyword
   var global_top_salient_terms = util.httpGet(
-    'http://3.34.114.152:5004/top_salient_terms'
+    'http://3.34.114.152:5003/top_salient_terms'
   );
 
   var top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -194,7 +198,7 @@ export default function Cards() {
     datapoints = [];
     global_topic_list = [];
     var global_topic_coordinates = util.httpGet(
-      'http://3.34.114.152:5004/topic_coordinates'
+      'http://3.34.114.152:5003/topic_coordinates'
     );
     for (
       var i = 0;
@@ -227,7 +231,7 @@ export default function Cards() {
     for (var contrib = 0; contrib < 10; contrib++) {
       util.angle_up((contrib + 1).toString());
     }
-    console.log('apply_click: ', datapoints);
+    // console.log('apply_click: ', datapoints);
 
     setOptions(initial_options);
 
@@ -246,7 +250,7 @@ export default function Cards() {
     var url = '';
     if (selected[0] == 'category1') {
       base_url =
-        'http://3.34.114.152:5004/filtered_data?category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5003/filtered_data?category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -258,7 +262,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category2') {
       base_url =
-        'http://3.34.114.152:5004/filtered_data?category1=all&category3=all&start_date=';
+        'http://3.34.114.152:5003/filtered_data?category1=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -270,7 +274,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category3') {
       base_url =
-        'http://3.34.114.152:5004/filtered_data?category1=all&category2=all&start_date=';
+        'http://3.34.114.152:5003/filtered_data?category1=all&category2=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -282,7 +286,7 @@ export default function Cards() {
         selected[1];
     } else {
       base_url =
-        'http://3.34.114.152:5004/filtered_data?category1=all&category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5003/filtered_data?category1=all&category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -293,7 +297,7 @@ export default function Cards() {
     httpGet(url);
 
     global_docs_per_topic = util.httpGet(
-      'http://3.34.114.152:5004/representative_docs_by_topic?topic=all&top_doc_n=1'
+      'http://3.34.114.152:5003/representative_docs_by_topic?topic=all&top_doc_n=1'
     );
 
     var topic2id = Object.keys(global_docs_per_topic['Topic_Num']).reduce(
@@ -369,7 +373,7 @@ export default function Cards() {
       );
       // full_content = util.new_line(full_content);
       full_content = util.tagging(full_content);
-      console.log('kpe: ', kpe[global_document[summary_id]]);
+      // console.log('kpe: ', kpe[global_document[summary_id]]);
 
       document.getElementById('document' + i + j).innerHTML =
         full_content.replace('</p>', '').replace('</Button>', '') +
@@ -402,6 +406,28 @@ export default function Cards() {
   };
 
   // let keyword_list = [];
+  function keyword_num_click(e) {
+    var text = document.getElementById('num_of_keywords').innerText;
+    console.log('키워드 클릭시 숫자 변동 : ', text);
+    if (text == 'TOP 10') {
+      text = 'TOP 20';
+      global_num_of_keyword = 20;
+      setKeywordNum(global_num_of_keyword);
+    } else if (text == 'TOP 20') {
+      text = 'TOP 30';
+      global_num_of_keyword = 30;
+      setKeywordNum(global_num_of_keyword);
+
+    } else if (text == 'TOP 30') {
+      text = 'TOP 10';
+      global_num_of_keyword = 10;
+      setKeywordNum(global_num_of_keyword);
+
+    }
+    document.getElementById('num_of_keywords').innerText = text;
+    // console.log('키워드 클릭시 숫자 변동 : ', e.keys());
+    // console.log('키워드 클릭시 숫자 변동 : ', e.value);
+  }
 
   function angle_down(e, row, selected_topic) {
     var total_full = {};
@@ -411,7 +437,7 @@ export default function Cards() {
 
     // todo-hj: 키워드와 관련한 문서번호들과 해당되는 확률만 가져오기 (문서번호 - 확률)
     var url =
-      'http://3.34.114.152:5004/representative_docs_by_topic?topic=' +
+      'http://3.34.114.152:5003/representative_docs_by_topic?topic=' +
       selected_topic +
       '&top_doc_n=5&topic_keyword=' +
       keyword;
@@ -505,7 +531,7 @@ export default function Cards() {
 
   function keyword_click(e) {
     var keyword = e.currentTarget.value;
-    var url = 'http://3.34.114.152:5004/topic_dist_term?term=' + keyword;
+    var url = 'http://3.34.114.152:5003/topic_dist_term?term=' + keyword;
     var prob = util.httpGet(url)['Freq'];
     var topic_term = httpGet(url)['Topic'];
     // var datapoints_new = [];
@@ -660,16 +686,25 @@ export default function Cards() {
                 <b id="keyword_title">토픽당 키워드 : Topic ALL</b>
               </div>
               <div className="card-header--actions">
-                <div className="badge badge-warning">Top 10</div>
+                <div
+                  id="num_of_keywords"
+                  className="badge badge-warning"
+                  onClick={keyword_num_click}
+                  value="Top 10">
+                  Top 10
+                </div>
               </div>
             </div>
             <List>
               <div id="keyword">
                 <Keywords
-                  id="1"
+                  key={keywordNum}
+                  id={keywordNum}
                   onClick={keyword_click}
                   onClick1={handleClickSummary}
                 />
+                {/*<Keyword id={global_num_of_keyword} onClick={keyword_click}*/}
+                {/*  onClick1={handleClickSummary}/>*/}
               </div>
             </List>
           </Card>

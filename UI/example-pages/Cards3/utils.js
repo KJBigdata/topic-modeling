@@ -1,6 +1,6 @@
 //
 // export var global_docs_per_topic = util.httpGet(
-//   'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
+//   'http://3.34.114.152:5003/representative_docs_by_topic?topic=all&top_doc_n=1'
 // );
 // export const [keywordid, setKeywordid] = React.useState(null);
 export function httpGet(theUrl) {
@@ -57,7 +57,7 @@ export function tagging(text) {
     text = text.replaceAll(
       '[F]',
       "<br><span class='highlight_box'>" +
-        '<span style="color:darkred; font-weight=bold;">' +
+        '<span style="color:red; font-weight=bold;">' +
         '상담원&nbsp;' +
         '</span>' +
         '</span>'
@@ -131,8 +131,8 @@ export function highlighting_entity(text, entity, keywords = []) {
   if (entity == undefined || entity == []) {
     return text;
   }
-  console.log('highlighting_entity');
-  console.log(keywords);
+  // console.log('highlighting_entity');
+  // console.log(keywords);
   var entity_list = keywords;
   for (var i = 0; i < entity.length; i++) {
     // try {
@@ -147,9 +147,9 @@ export function highlighting_entity(text, entity, keywords = []) {
           check_substring = true;
         }
       }
-      console.log('**************');
-      console.log(entity_list);
-      console.log(raw);
+      // console.log('**************');
+      // console.log(entity_list);
+      // console.log(raw);
       entity_list.push(raw);
       if (check_substring == false) {
         if (category == 'ORG') {
@@ -220,16 +220,16 @@ export function highlighting_kpe(text, entity) {
 
   var entity_list = [];
   for (var i = 0; i < entity.length; i++) {
-    console.log('i.length:', entity.length);
-    console.log('i:', i);
+    // console.log('i.length:', entity.length);
+    // console.log('i:', i);
     // try {
     // var category = entity[i]['category'];
     var raw = entity[i]['keyword'];
     var category = entity[i]['category'];
-    console.log('raw:', raw);
+    // console.log('raw:', raw);
     // var check = entity_list.includes(raw);
     if (entity_list.includes(raw)) {
-      console.log('in------------');
+      // console.log('in------------');
       continue;
     } else {
       entity_list.push(raw);
