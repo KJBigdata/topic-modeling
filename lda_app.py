@@ -112,7 +112,7 @@ def output():
         res = request.args.get('filename')
         filename = f"{res}.png"
 
-        target_path = generate_wordcloud(filter_tokens(input_data['tokens'].to_list()))
+        target_path = generate_wordcloud(input_data['tokens'].to_list())
 
         return send_from_directory(directory=os.path.join(app.config['UPLOAD_FOLDER'], 'vis')
                                    , filename=filename)
@@ -132,7 +132,7 @@ def modeling():
             # prepare dictionary, corpus
             tokens_list = input_data['tokens'].to_list()
             entity_list = input_data['entity'].to_list()
-            tokens_list = filter_tokens(tokens_list, entity_list)
+            tokens_list = filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=99.98)
 
             if ngram in ['bigram', 'trigram']:
                 bigram = create_bigram_model(tokens_list, min_count=5, threshold=100)
@@ -144,7 +144,8 @@ def modeling():
             # modeling
             trainer = LDATrainer(tokens_list=tokens_list, tf_idf=False)
             try:
-                trainer.train(trainer.corpus, trainer.dictionary, num_topics=9, passes=30, workers=4, iterations=30,
+                num_t = len(list(set(input_data.category1)))
+                trainer.train(trainer.corpus, trainer.dictionary, num_topics=num_t, passes=30, workers=4, iterations=30,
                               chunksize=50,
                               save=True)
                 response['result'] = True
@@ -348,7 +349,7 @@ def show_representative_docs():
 
                 elif find_string_idx(t, keyword) != -1:
                     idx = find_string_idx(t, keyword)
-                    print(f"{i}번째 문서, {t[idx-1:]}")
+                    #print(f"{i}번째 문서, {t[idx-1:]}")
                     relevant_doc['ix'].append(i)
                     # relevant_doc['hlight_sentence'].append(hlight_term(t, keyword))
 
