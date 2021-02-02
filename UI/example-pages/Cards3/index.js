@@ -698,7 +698,7 @@ export default function Cards() {
             <List>
               <div id="keyword">
                 <Keywords
-                  key={keywordNum}
+                  key={keywordNum+outkeywordid}
                   id={keywordNum}
                   onClick={keyword_click}
                   onClick1={handleClickSummary}

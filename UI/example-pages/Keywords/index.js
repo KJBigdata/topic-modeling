@@ -64,75 +64,6 @@ export default class Keywords extends React.Component {
         this.num_list.push((i + 1).toString());
       }
     }
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any) {
-    // this.constructor(nextProps);
-    console.log('componentWillReceiveProps');
-    this.num = this.props.id;
-        this.num_list = [];
-    if (this.num == '10') {
-      for (var i = 0; i < 10; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    } else if (this.num == '20') {
-      for (i = 0; i < 20; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    } else if (this.num == '30') {
-      for (i = 0; i < 30; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    }
-    this.render();
-    this.forceUpdate();
-    console.log(nextProps);
-    this.setState(nextProps);
-  }
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
-  }
-  componentDidUpdate() {
-    console.log('componentDidUpdate_keyword');
-    console.log(this.props);
-    console.log(this.props.id);
-    //Update Chart Options & Render
-    this.num = this.props.id;
-    this.num_list = [];
-    if (this.num == '10') {
-      for (var i = 0; i < 10; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    } else if (this.num == '20') {
-      for (i = 0; i < 20; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    } else if (this.num == '30') {
-      for (i = 0; i < 30; i++) {
-        this.num_list.push((i + 1).toString());
-      }
-    }
-    this.render();
-    // this.forceUpdate();
-  }
-  // eslint-disable-next-line react/no-deprecated
-  componentWillUpdate() {
-    // this.num = props.id;
-    // this.num_list = [];
-    // if (this.num == '10') {
-    //   for (var i = 0; i < 10; i++) {
-    //     this.num_list.push((i + 1).toString());
-    //   }
-    // } else if (this.num == '20') {
-    //   for (i = 0; i < 20; i++) {
-    //     this.num_list.push((i + 1).toString());
-    //   }
-    // } else if (this.num == '30') {
-    //   for (i = 0; i < 30; i++) {
-    //     this.num_list.push((i + 1).toString());
-    //   }
-    // }
-    console.log('componentDidUpdate keyword');
     this.style = {};
     this.keyword_top = [];
     var global_top_salient_terms,
@@ -213,6 +144,75 @@ export default class Keywords extends React.Component {
       // console.log('keyword_top: ', this.keyword_top);
       // console.log('style: ', this.style);
     }
+  }
+  componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any) {
+    // this.constructor(nextProps);
+    console.log('componentWillReceiveProps');
+    this.num = this.props.id;
+    this.num_list = [];
+    if (this.num == '10') {
+      for (var i = 0; i < 10; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    } else if (this.num == '20') {
+      for (i = 0; i < 20; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    } else if (this.num == '30') {
+      for (i = 0; i < 30; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    }
+    this.render();
+    this.forceUpdate();
+    console.log(nextProps);
+    this.setState(nextProps);
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
+  }
+  componentDidUpdate() {
+    console.log('componentDidUpdate_keyword');
+    console.log(this.props);
+    console.log(this.props.id);
+    //Update Chart Options & Render
+    this.num = this.props.id;
+    this.num_list = [];
+    if (this.num == '10') {
+      for (var i = 0; i < 10; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    } else if (this.num == '20') {
+      for (i = 0; i < 20; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    } else if (this.num == '30') {
+      for (i = 0; i < 30; i++) {
+        this.num_list.push((i + 1).toString());
+      }
+    }
+    this.render();
+    // this.forceUpdate();
+  }
+  // eslint-disable-next-line react/no-deprecated
+  componentWillUpdate() {
+    // this.num = props.id;
+    // this.num_list = [];
+    // if (this.num == '10') {
+    //   for (var i = 0; i < 10; i++) {
+    //     this.num_list.push((i + 1).toString());
+    //   }
+    // } else if (this.num == '20') {
+    //   for (i = 0; i < 20; i++) {
+    //     this.num_list.push((i + 1).toString());
+    //   }
+    // } else if (this.num == '30') {
+    //   for (i = 0; i < 30; i++) {
+    //     this.num_list.push((i + 1).toString());
+    //   }
+    // }
+    console.log('componentDidUpdate keyword');
+    // }
 
     this.render();
     // this.forceUpdate()
@@ -288,7 +288,9 @@ export default class Keywords extends React.Component {
 
     return (
       <List>
-        <div id="keyword" key={this.props.id}>{mapToComponent(this.num_list)}</div>
+        <div id="keyword" key={this.props.id}>
+          {mapToComponent(this.num_list)}
+        </div>
       </List>
     );
     // return (
