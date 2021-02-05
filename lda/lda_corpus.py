@@ -33,10 +33,8 @@ def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=95):
     word_counter = Counter([word for words in tokens_list for word in words])
     word_counter_keys = list(word_counter.keys())
 
-    per_pattern = f"( )({'|'.join(per)})(님)?( )"
+    per_pattern = f"({'|'.join(per)})(님)?( )"
     filtered_keys = [t for t in re.sub(per_pattern, ' ', ' '.join(word_counter_keys)).split(' ') if t != '']
-    k_number_pattern = r"(공|일|이|삼|사|오|육|칠|팔|구|십|백|천|만){1,6}(원)?( )"
-    filtered_keys = [t for t in re.sub(k_number_pattern, ' ', ' '.join(filtered_keys)).split(' ') if t != '']
     deleted_keys = []
     for i in tqdm(range(len(word_counter_keys)), desc='Deleting PER KEYs'):
         if word_counter_keys[i] in filtered_keys:
@@ -44,6 +42,18 @@ def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=95):
         else:
             deleted_keys.append(word_counter_keys[i])
             del word_counter[word_counter_keys[i]]
+
+    k_number_pattern = r"(공|일|이|삼|사|오|육|칠|팔|구|십|백|천|만){1,6}(원)?( )"
+    filtered_keys = [t for t in re.sub(k_number_pattern, ' ', ' '.join(list(word_counter.keys()))).split(' ') if t != '']
+
+    word_counter_keys = list(word_counter.keys())
+    for i in tqdm(range(len(word_counter_keys)), desc='Deleting K-NUMBER KEYs'):
+        if word_counter_keys[i] in filtered_keys:
+            pass
+        else:
+            deleted_keys.append(word_counter_keys[i])
+            del word_counter[word_counter_keys[i]]
+
     print(f"Number of deleted keys : {len(deleted_keys)}")
     l_bound = np.percentile(sorted(list(word_counter.values())), l_bound)
     h_bound = np.percentile(sorted(list(word_counter.values())), h_bound)
@@ -51,7 +61,7 @@ def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=95):
 
     filtered_tokens = [[token for token in tokens_list[i] if token in filter]
                        for i in tqdm(range(len(tokens_list)), desc='Filtering Tokens for modeling')]
-    print(f"Number of tokens after filtering : {filtered_tokens}")
+    print(f"Number of tokens after filtering : {len(filtered_tokens)}")
     return filtered_tokens
 
 def filter_infreq(dictionary, tokens_list):

@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import pprint
 
@@ -41,26 +42,26 @@ def make_docs_info(tokens_list):
     global relevant_docs_df
 
     if os.path.isdir("./data/docs"):
-        print('Representative and Relevant Docs exist..')
+        print('Docs directory exist..')
         pass
 
     else :
-        print(f"make data/docs path and datas")
         print(f"successfully make {os.path.join(os.getcwd(), 'data/docs')}")
         os.mkdir(os.path.join(os.getcwd(), 'data/docs'))
 
-        pipeline = Pipeline(input_data, ['all'], ['all'], ['all'], ngram=ngram, tokens_list=tokens_list)
-        topic_model = pipeline.topic_modeling()
-        topic_model.filtered_df = pipeline.filtered_df
+    pipeline = Pipeline(input_data, ['all'], ['all'], ['all'], ngram=ngram, tokens_list=tokens_list)
+    topic_model = pipeline.topic_modeling()
+    topic_model.filtered_df = pipeline.filtered_df
 
-        representative_docs_df = topic_model.get_representative_docs(topic_model.model, topic_model.corpus,
-                                                                     list(topic_model.filtered_df.index),
-                                                                     topic_model.filtered_df['content'].to_list())
-        representative_docs_df.to_pickle(os.path.join('./data/docs', 'representative_docs.pkl'))
-        relevant_docs_df = topic_model.get_relevant_docs(topic_model.model, topic_model.corpus,
-                                                         list(topic_model.filtered_df.index),
-                                                         topic_model.filtered_df['content'].to_list())
-        relevant_docs_df.to_pickle(os.path.join('./data/docs','relevant_docs.pkl'))
+    representative_docs_df = topic_model.get_representative_docs(topic_model.model, topic_model.corpus,
+                                                                 list(topic_model.filtered_df.index),
+                                                                 topic_model.filtered_df['content'].to_list())
+    representative_docs_df.to_pickle(os.path.join('./data/docs', 'representative_docs.pkl'))
+    relevant_docs_df = topic_model.get_relevant_docs(topic_model.model, topic_model.corpus,
+                                                     list(topic_model.filtered_df.index),
+                                                     topic_model.filtered_df['content'].to_list())
+    relevant_docs_df.to_pickle(os.path.join('./data/docs','relevant_docs.pkl'))
+    print(f"make data/docs path and datas")
 
     return jsonify({'result':'success'})
 
@@ -112,7 +113,7 @@ def output():
         res = request.args.get('filename')
         filename = f"{res}.png"
 
-        target_path = generate_wordcloud(filter_tokens(input_data['tokens'].to_list()))
+        target_path = generate_wordcloud(input_data['tokens'].to_list())
 
         return send_from_directory(directory=os.path.join(app.config['UPLOAD_FOLDER'], 'vis')
                                    , filename=filename)
@@ -125,37 +126,45 @@ def modeling():
 
         response = {}
 
-        if os.path.isfile("lda/model/lda_model.gensim"):
-            response['result'] = True
-            print('Model Loading..')
+        # if os.path.isfile("lda/model/lda_model.gensim"):
+        #     response['result'] = True
+        #     print('Model Loading..')
+        # else:
+        # prepare dictionary, corpus
+        tokens_list = input_data['tokens'].to_list()
+        entity_list = input_data['entity'].to_list()
+        tokens_list = filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=99.98)
+
+        if ngram in ['bigram', 'trigram']:
+            bigram = create_bigram_model(tokens_list, min_count=5, threshold=100)
+            tokens_list = convert_to_bigram_tokens(tokens_list, bigram)
         else:
-            # prepare dictionary, corpus
-            tokens_list = input_data['tokens'].to_list()
-            entity_list = input_data['entity'].to_list()
-            tokens_list = filter_tokens(tokens_list, entity_list)
+            pass
 
-            if ngram in ['bigram', 'trigram']:
-                bigram = create_bigram_model(tokens_list, min_count=5, threshold=100)
-                tokens_list = convert_to_bigram_tokens(tokens_list, bigram)
+        print('Model Training..')
+        # modeling
+        trainer = LDATrainer(tokens_list=tokens_list, tf_idf=False)
+        try:
+            category_num = {c: len(list(set(input_data[f"{c}"]))) for c in list(input_data.columns) if
+                            re.search(re.compile(r"(category)."), c) is not None}
+            if category_num != {}:
+                choose_category = sorted(category_num.items(), reverse=True)[0][0]
+                num_t = len(list(set(input_data[f"{choose_category}"])))
+                trainer.train(trainer.corpus, trainer.dictionary, num_topics=num_t, passes=30, workers=4, iterations=30,
+                              chunksize=50, save=True)
             else:
-                pass
+                trainer.fit_optimal_topic_model(trainer.corpus, trainer.dictionary, passes=30, workers=4, iterations=30,
+                              chunksize=50, limit=20, start=5, step=2, save=True)
 
-            print('Model Training..')
-            # modeling
-            trainer = LDATrainer(tokens_list=tokens_list, tf_idf=False)
-            try:
-                trainer.train(trainer.corpus, trainer.dictionary, num_topics=9, passes=30, workers=4, iterations=30,
-                              chunksize=50,
-                              save=True)
-                response['result'] = True
+            response['result'] = True
 
-            except Exception as ex:
-                print(ex)
+        except Exception as ex:
+            print(ex)
+            response['result'] = False
 
-                response['result'] = False
-            make_docs_info(tokens_list)
-            with open('data/docs/filtered_tokens.pkl', 'wb') as f:
-                pickle.dump(tokens_list, f)
+        make_docs_info(tokens_list)
+        with open('data/docs/filtered_tokens.pkl', 'wb') as f:
+            pickle.dump(tokens_list, f)
 
     return jsonify(response)
 
@@ -167,15 +176,13 @@ def filter_input_data():
     print('---------------Start---------------')
 
     if request.method in ['GET', 'POST']:
+
         category1 = request.args.getlist('category1')
-        if 'category2' in input_data.columns:
-            category2 = request.args.getlist('category2')
-        else:
-            category2 = []
-        if 'category3' in input_data.columns:
-            category3 = request.args.getlist('category3')
-        else:
-            category3 = []
+
+        category2 = request.args.getlist('category2')
+
+        category3 = request.args.getlist('category3')
+
 
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
@@ -348,7 +355,7 @@ def show_representative_docs():
 
                 elif find_string_idx(t, keyword) != -1:
                     idx = find_string_idx(t, keyword)
-                    print(f"{i}번째 문서, {t[idx-1:]}")
+                    #print(f"{i}번째 문서, {t[idx-1:]}")
                     relevant_doc['ix'].append(i)
                     # relevant_doc['hlight_sentence'].append(hlight_term(t, keyword))
 
