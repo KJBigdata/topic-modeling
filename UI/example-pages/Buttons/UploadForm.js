@@ -162,7 +162,7 @@ class Progressbar extends React.Component {
     return (
       <div>
 
-        <FileUploadProgress key='file' url='http://3.34.114.152:5002/upload' method='post'
+        <FileUploadProgress key='file' url='http://3.34.114.152:5005/upload' method='post'
           onProgress={(e, request, progress) => { console.log('progress', e, request, progress); }}
           onLoad={(e, request) => { console.log('load', e, request); }}
           onError={(e, request) => { console.log('error', e, request); }}

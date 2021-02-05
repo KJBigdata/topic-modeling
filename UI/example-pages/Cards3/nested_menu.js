@@ -15,28 +15,42 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-export var global_filtered_data = util.httpGet('http://3.34.114.152:5002/filtered_data?category1=all&category2=all');
+export var global_filtered_data = util.httpGet('http://3.34.114.152:5005/filtered_data?category1=all&category2=all');
 
-// var url = 'http://3.34.114.152:5002/filtered_data?press=all&category=all';
+// var url = 'http://3.34.114.152:5006/filtered_data?press=all&category=all';
 // const data = util.httpGet(url);
-
-
-var unselect_option1 = ['date', 'title', 'content', 'tokens', 'd2c', 'kpe', 'key_sentence', 'entity', 'max_date', 'min_date'];
-var select_option1 = Object.keys(global_filtered_data);
 var options_key = [];
+var category = {};
 var options = {};
-// console.log('unselect_option1', unselect_option1);
-// console.log('select_option1', select_option1);
-for (var i = 0; i < select_option1.length; i++) {
-  // console.log(select_option1[i]);
-  if (!unselect_option1.includes(select_option1[i])) {
-    options_key.push(select_option1[i]);
-    // console.log('COL:', select_option1[i]);
-    var option = Array.from(new Set(Object.values(global_filtered_data[select_option1[i]])));
-    // console.log('option: ', option);
-    options[select_option1[i]] = option;
+var category_list = ['category1', 'category2', 'category3'];
+console.log('global_filter: ', Object.keys(global_filtered_data));
+for (var i = 0; i < 3; i++) {
+  if (Object.keys(global_filtered_data).includes(category_list[i])) {
+    options_key.push(category_list[i]);
+    category[i + 1] = global_filtered_data[category_list[i]];
+    var option = Array.from(new Set(Object.values(global_filtered_data[category_list[i]])));
+    options[category_list[i]] = option;
+    // var category2 = global_filtered_data['category2'];
+    // var category3 = global_filtered_data['category3'];
   }
 }
+
+// var unselect_option1 = ['date', 'title', 'content', 'tokens', 'd2c', 'kpe', 'key_sentence', 'entity', 'max_date', 'min_date'];
+// var select_option1 = Object.keys(global_filtered_data);
+// var options_key = [];
+//
+// // console.log('unselect_option1', unselect_option1);
+// // console.log('select_option1', select_option1);
+// for (var i = 0; i < select_option1.length; i++) {
+//   // console.log(select_option1[i]);
+//   if (!unselect_option1.includes(select_option1[i])) {
+//     options_key.push(select_option1[i]);
+//     // console.log('COL:', select_option1[i]);
+//     var option = Array.from(new Set(Object.values(global_filtered_data[select_option1[i]])));
+//     // console.log('option: ', option);
+//     options[select_option1[i]] = option;
+//   }
+// }
 
 export function SimpleListMenu() {
   // console.log('options:', options);
