@@ -61,7 +61,7 @@ def filter_tokens(tokens_list, entity_list, l_bound=10, h_bound=95):
 
     filtered_tokens = [[token for token in tokens_list[i] if token in filter]
                        for i in tqdm(range(len(tokens_list)), desc='Filtering Tokens for modeling')]
-    print(f"Number of tokens after filtering : {filtered_tokens}")
+    print(f"Number of tokens after filtering : {len(filtered_tokens)}")
     return filtered_tokens
 
 def filter_infreq(dictionary, tokens_list):

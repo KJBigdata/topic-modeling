@@ -16,12 +16,20 @@ class Pipeline:
 		self.input_data = input_data
 
 		if category1 == ['all']:
-			self.category1 = list(set(input_data.category1))
+			try:
+				self.category1 = list(set(input_data.category1))
+			except Exception as ex:
+				print(ex)
+				self.category1 = []
 		else:
 			self.category1 = category1
 
 		if category2 == ['all']:
-			self.category2 = list(set(input_data.category2))
+			try:
+				self.category2 = list(set(input_data.category2))
+			except Exception as ex:
+				print(ex)
+				self.category2 = []
 		else:
 			self.category2 = category2
 
@@ -58,7 +66,8 @@ class Pipeline:
 		if (self.start_date and self.end_date) is not None:
 			dt_list = listing_daterange(self.start_date, self.end_date)
 			filtered_df = filtered_df[filtered_df['date'].isin(dt_list)]
-		filtered_df = filtered_df[filtered_df['category1'].isin(self.category1)]
+		if self.category1 != []:
+			filtered_df = filtered_df[filtered_df['category1'].isin(self.category1)]
 		if self.category2 != []:
 			filtered_df = filtered_df[filtered_df['category2'].isin(self.category2)]
 		if self.category3 != []:

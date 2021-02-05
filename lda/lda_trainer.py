@@ -48,7 +48,7 @@ class LDATrainer:
         print("Coherence:", coherence)
         print('Perplexity:', perplexity)
 
-    def fit_optimal_topic_model(self, corpus, dictionary, tokens_list,
+    def fit_optimal_topic_model(self, corpus, dictionary,
                                 passes=30, workers=4, iterations=10, chunksize=200,
                                 limit=30, start=5, step=2, save=True):
         """
