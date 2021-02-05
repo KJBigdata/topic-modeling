@@ -12,7 +12,7 @@ var style = {};
 var keyword_top = [];
 
 var global_top_salient_terms = util.httpGet(
-  'http://3.34.114.152:5005/top_salient_terms'
+  'http://3.34.114.152:5002/top_salient_terms'
 );
 
 var top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -93,7 +93,7 @@ export default class Keywords extends React.Component {
       this.keyword_top = [];
       console.log('componentDidUpdate keyword_all');
       global_top_salient_terms = util.httpGet(
-        'http://3.34.114.152:5005/top_salient_terms'
+        'http://3.34.114.152:5002/top_salient_terms'
       );
 
       top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -125,7 +125,7 @@ export default class Keywords extends React.Component {
       this.keyword_top = [];
       console.log('componentDidUpdate keyword_' + global_topic_num);
       global_top_salient_terms = util.httpGet(
-        'http://3.34.114.152:5006ss/topic_relevance?topic=' +
+        'http://3.34.114.152:5002/topic_relevance?topic=' +
           global_topic_num +
           '&lambda=' +
           global_lambda_value.toString()

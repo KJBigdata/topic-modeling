@@ -24,7 +24,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 let outsetKeywordid, outkeywordid;
 export var global_topic_num = 'all';
 var global_docs_per_topic = util.httpGet(
-  'http://3.34.114.152:5005/representative_docs_by_topic?topic=all&top_doc_n=1'
+  'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
 );
 export function onClickChart(event) {
   var kpe = global_filtered_data['kpe'];
@@ -84,7 +84,7 @@ for (var i = 0; i < 30; i++) {
 var datapoints = [];
 
 var global_topic_coordinates = util.httpGet(
-  'http://3.34.114.152:5005/topic_coordinates'
+  'http://3.34.114.152:5002/topic_coordinates'
 );
 var global_topic_keyword = global_topic_coordinates['Keywords'];
 
@@ -125,9 +125,7 @@ var global_num_of_keyword = 10;
 
 export default function Cards() {
   // todo: for kbsta analysis
-  // var global_filtered_data = util.httpGet(
-  //   'http://3.34.114.152:5006/filtered_data?category=all&press=all'
-  // );
+
   var global_keysentence = global_filtered_data['key_sentence'];
   var global_d2c = global_filtered_data['d2c'];
   var category = {};
@@ -140,7 +138,7 @@ export default function Cards() {
   // todo: global variable
 
   var global_filter = util.httpGet(
-    'http://3.34.114.152:5005/filtered_data?category1=all&category2=all'
+    'http://3.34.114.152:5002/filtered_data?category1=all&category2=all'
   );
   var global_category = [];
   var category_list = ['category1', 'category2', 'category3'];
@@ -179,7 +177,7 @@ export default function Cards() {
 
   // todo: for top 30 keyword
   var global_top_salient_terms = util.httpGet(
-    'http://3.34.114.152:5005/top_salient_terms'
+    'http://3.34.114.152:5002/top_salient_terms'
   );
 
   var top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -209,7 +207,7 @@ export default function Cards() {
     datapoints = [];
     global_topic_list = [];
     var global_topic_coordinates = util.httpGet(
-      'http://3.34.114.152:5005/topic_coordinates'
+      'http://3.34.114.152:5002/topic_coordinates'
     );
     for (
       var i = 0;
@@ -261,7 +259,7 @@ export default function Cards() {
     var url = '';
     if (selected[0] == 'category1') {
       base_url =
-        'http://3.34.114.152:5005/filtered_data?category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5002/filtered_data?category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -273,7 +271,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category2') {
       base_url =
-        'http://3.34.114.152:5005/filtered_data?category1=all&category3=all&start_date=';
+        'http://3.34.114.152:5002/filtered_data?category1=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -285,7 +283,7 @@ export default function Cards() {
         selected[1];
     } else if (selected[0] == 'category3') {
       base_url =
-        'http://3.34.114.152:5005/filtered_data?category1=all&category2=all&start_date=';
+        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -297,7 +295,7 @@ export default function Cards() {
         selected[1];
     } else {
       base_url =
-        'http://3.34.114.152:5005/filtered_data?category1=all&category2=all&category3=all&start_date=';
+        'http://3.34.114.152:5002/filtered_data?category1=all&category2=all&category3=all&start_date=';
       url =
         base_url +
         start_date_list[0].replaceAll('-', '') +
@@ -308,7 +306,7 @@ export default function Cards() {
     httpGet(url);
 
     global_docs_per_topic = util.httpGet(
-      'http://3.34.114.152:5005/representative_docs_by_topic?topic=all&top_doc_n=1'
+      'http://3.34.114.152:5002/representative_docs_by_topic?topic=all&top_doc_n=1'
     );
 
     var topic2id = Object.keys(global_docs_per_topic['Topic_Num']).reduce(
@@ -448,7 +446,7 @@ export default function Cards() {
 
     // todo-hj: 키워드와 관련한 문서번호들과 해당되는 확률만 가져오기 (문서번호 - 확률)
     var url =
-      'http://3.34.114.152:5005/representative_docs_by_topic?topic=' +
+      'http://3.34.114.152:5002/representative_docs_by_topic?topic=' +
       selected_topic +
       '&top_doc_n=5&topic_keyword=' +
       keyword;
@@ -542,7 +540,7 @@ export default function Cards() {
 
   function keyword_click(e) {
     var keyword = e.currentTarget.value;
-    var url = 'http://3.34.114.152:5005/topic_dist_term?term=' + keyword;
+    var url = 'http://3.34.114.152:5002/topic_dist_term?term=' + keyword;
     var prob = util.httpGet(url)['Freq'];
     var topic_term = httpGet(url)['Topic'];
     // var datapoints_new = [];
