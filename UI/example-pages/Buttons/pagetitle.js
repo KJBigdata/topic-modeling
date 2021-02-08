@@ -34,7 +34,7 @@ function PageTitle(props) {
 
 
   const sampleDownload = async (file_name, file_path) => {
-     const res = await fetch('http://3.34.114.152:5002/sample_download?filename=sample_1000_news.tsv', {
+     const res = await fetch('http://3.34.114.152:5006/sample_download?filename=sample_1000_news.tsv', {
        responseType: 'blob',
        method: 'GET'
      });

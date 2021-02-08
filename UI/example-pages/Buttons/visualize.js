@@ -13,7 +13,7 @@ import {
     Row, Col
 } from "reactstrap";
 
-const apiURL = "http://3.34.114.152:5002";
+const apiURL = "http://3.34.114.152:5006";
 
 const styles = theme => ({
     fab: {

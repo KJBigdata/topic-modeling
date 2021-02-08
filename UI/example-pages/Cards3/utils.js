@@ -1,5 +1,7 @@
 //
-
+// export var global_docs_per_topic = util.httpGet(
+//   'http://3.34.114.152:5006/representative_docs_by_topic?topic=all&top_doc_n=1'
+// );
 // export const [keywordid, setKeywordid] = React.useState(null);
 export function httpGet(theUrl) {
   console.log('theUrl:', theUrl);

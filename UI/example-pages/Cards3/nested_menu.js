@@ -15,13 +15,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-export var global_filtered_data = util.httpGet('http://3.34.114.152:5002/filtered_data?category1=all&category2=all');
+export var global_filtered_data = util.httpGet('http://3.34.114.152:5006/filtered_data?category1=all&category2=all');
 
+// var url = 'http://3.34.114.152:5006/filtered_data?press=all&category=all';
+// const data = util.httpGet(url);
 var options_key = [];
 var category = {};
 var options = {};
 var category_list = ['category1', 'category2', 'category3'];
-console.log('global_filter: ', Object.keys(global_filtered_data));
+// console.log('global_filter: ', Object.keys(global_filtered_data));
 for (var i = 0; i < 3; i++) {
   if (Object.keys(global_filtered_data).includes(category_list[i])) {
     options_key.push(category_list[i]);

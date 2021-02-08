@@ -12,7 +12,7 @@ var style = {};
 var keyword_top = [];
 
 var global_top_salient_terms = util.httpGet(
-  'http://3.34.114.152:5002/top_salient_terms'
+  'http://3.34.114.152:5006/top_salient_terms'
 );
 
 var top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -40,13 +40,12 @@ for (var ii = 0; ii < num_term; ii++) {
 
 export default class Keywords extends React.Component {
   constructor(props) {
+    console.log('KEYWORD');
     super(props);
-    console.log('&&&&&&&&&&&&&&&&&&');
-    console.log('keyword constructed');
     this.num = props.id;
     // i = parseInt(i.toString);
 
-    this.keyword_click = props.onClick;
+    this.keyword_click = props.onClick2;
     this.handleClickSummary = props.onClick1;
     this.style = style;
     this.keyword_top = keyword_top;
@@ -93,7 +92,7 @@ export default class Keywords extends React.Component {
       this.keyword_top = [];
       console.log('componentDidUpdate keyword_all');
       global_top_salient_terms = util.httpGet(
-        'http://3.34.114.152:5002/top_salient_terms'
+        'http://3.34.114.152:5006/top_salient_terms'
       );
 
       top_freq = util.sortByValue(global_top_salient_terms['Freq']);
@@ -125,7 +124,7 @@ export default class Keywords extends React.Component {
       this.keyword_top = [];
       console.log('componentDidUpdate keyword_' + global_topic_num);
       global_top_salient_terms = util.httpGet(
-        'http://3.34.114.152:5002/topic_relevance?topic=' +
+        'http://3.34.114.152:5006/topic_relevance?topic=' +
           global_topic_num +
           '&lambda=' +
           global_lambda_value.toString()
@@ -154,44 +153,12 @@ export default class Keywords extends React.Component {
         };
         this.keyword_top.push(top_term[key]);
       }
-      // console.log('keyword_top: ', this.keyword_top);
-      // console.log('style: ', this.style);
     }
   }
   componentWillReceiveProps(nextProps: Readonly<P>, nextContext: any) {
     // this.constructor(nextProps);
     console.log('componentWillReceiveProps');
     this.num = this.props.id;
-    this.num_list = [];
-    if (this.num == '10') {
-      for (var i = 0; i < 10; i++) {
-        if ((i + 1).toString().length == 2) {
-          this.num_list.push((i + 1).toString());
-        } else {
-          this.num_list.push('0' + (i + 1).toString());
-        }
-      }
-    } else if (this.num == '20') {
-      for (i = 0; i < 20; i++) {
-        if ((i + 1).toString().length == 2) {
-          this.num_list.push((i + 1).toString());
-        } else {
-          this.num_list.push('0' + (i + 1).toString());
-        }
-      }
-    } else if (this.num == '30') {
-      for (i = 0; i < 30; i++) {
-        if ((i + 1).toString().length == 2) {
-          this.num_list.push((i + 1).toString());
-        } else {
-          this.num_list.push('0' + (i + 1).toString());
-        }
-      }
-    }
-    this.render();
-    this.forceUpdate();
-    console.log(nextProps);
-    this.setState(nextProps);
   }
   shouldComponentUpdate(nextProps, nextState) {
     return true;
@@ -282,23 +249,23 @@ export default class Keywords extends React.Component {
             <div
               className="p-4-4-4"
               id={'document' + (i + 1).toString() + '1'}
-              onClick={this.handleClickSummary((i + 1).toString(), '1')}></div>
+              onClick={(e) => this.handleClickSummary(e, (i + 1).toString(), '1')}></div>
             <div
               className="p-4-4-4"
               id={'document' + (i + 1).toString() + '2'}
-              onClick={this.handleClickSummary((i + 1).toString(), '2')}></div>
+              onClick={(e) => this.handleClickSummary(e, (i + 1).toString(), '2')}></div>
             <div
               className="p-4-4-4"
               id={'document' + (i + 1).toString() + '3'}
-              onClick={this.handleClickSummary((i + 1).toString(), '3')}></div>
+              onClick={(e) => this.handleClickSummary(e, (i + 1).toString(), '3')}></div>
             <div
               className="p-4-4-4"
               id={'document' + (i + 1).toString() + '4'}
-              onClick={this.handleClickSummary((i + 1).toString(), '4')}></div>
+              onClick={(e) => this.handleClickSummary(e, (i + 1).toString(), '4')}></div>
             <div
               className="p-4-4-4"
               id={'document' + (i + 1).toString() + '5'}
-              onClick={this.handleClickSummary((i + 1).toString(), '5')}></div>
+              onClick={(e) => this.handleClickSummary(e, (i + 1).toString(), '5')}></div>
           </ListItem>
         );
       });

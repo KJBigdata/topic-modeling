@@ -113,11 +113,11 @@ export default function DashboardDefault() {
     setOptions(updated_options);
   }
   function onClickChart() {
-    console.log('chart is clicked');
+    // console.log('chart is clicked');
     changeOptions();
     // initial_options = updated_options;
-    console.log('updated_options : ', updated_options);
-    console.log('updated_options_changed? : ', options);
+    // console.log('updated_options : ', updated_options);
+    // console.log('updated_options_changed? : ', options);
   }
   return (
     // todo : home에서 설명 삽입가능

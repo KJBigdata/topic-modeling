@@ -9,7 +9,7 @@ import {
     Row, Col
 } from "reactstrap";
 
-const apiURL = "http://3.34.114.152:5004";
+const apiURL = "http://3.34.114.152:5006";
 
 class ModelingButton extends React.Component {
 
