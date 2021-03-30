@@ -35,6 +35,7 @@ export function onClickChart(event) {
       }),
     {}
   );
+  
   var doc = global_docs_per_topic['Text'][topic2id[global_topic_num]];
   if (doc == undefined) {
     document.getElementById('top_topic_document').innerHTML =
